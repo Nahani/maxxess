@@ -21,9 +21,14 @@ namespace DB
         Client getClientById(String id);
         Client getClientByName(String name);
 
+        List<Facture> getAllFactures();
+        Facture getFacture(int idFacture);
+
         ChequeFidelite getChequeFideliteById(String id);
         List<ChequeFidelite> getChequesFideliteByClient(Client client);
         bool insertChequeFidelite(ChequeFidelite cheque);
+
+
 
         /* ---------------------- */
 

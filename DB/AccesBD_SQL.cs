@@ -74,6 +74,26 @@ namespace DB
             return targeted_user;
         }
 
+        public List<Facture> getAllFactures()
+        {
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            SqlDataReader reader2;
+            List<Facture> result = new List<Facture>();
+            while (reader.Read())
+            {
+                req = "SELECT * FROM TIERS WHERE T_AUXILIAIRE='" + reader.GetString(5) + "'";
+                reader2 = Connexion.execute_Select(req);
+                if (reader2.Read())
+                {
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), new Client(reader2.GetString(0), reader2.GetString(1), reader2.GetString(2), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7))));
+                }
+                
+            }
+                
+            Connexion.close();
+            return result;
+        }
         public ChequeFidelite getChequeFideliteById(String id){
             String req = null;
             ChequeFidelite targeted_cheque = null;
@@ -102,6 +122,28 @@ namespace DB
             Connexion.close();
             return result;
         }
+
+        public Facture getFacture(int idFacture)
+        {
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMEROPIECE = "+ idFacture +"and E_NUMLIGNE=1;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            SqlDataReader reader2;
+            Facture result = null;
+            while (reader.Read())
+            {
+                req = "SELECT * FROM TIERS WHERE T_AUXILIAIRE='" + reader.GetString(5) + "'";
+                reader2 = Connexion.execute_Select(req);
+                if (reader2.Read())
+                {
+                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), new Client(reader2.GetString(0), reader2.GetString(1), reader2.GetString(2), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7)));
+                }
+
+            }
+
+            Connexion.close();
+            return result;
+        }
+
 
         public bool insertChequeFidelite(ChequeFidelite cheque)
         {
