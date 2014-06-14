@@ -50,6 +50,7 @@
     <Compile Include="AccesBD_SQL.cs" />
     <Compile Include="Album.cs" />
     <Compile Include="Article.cs" />
+    <Compile Include="ChequeFidelite.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Connexion.cs" />
     <Compile Include="Image.cs" />

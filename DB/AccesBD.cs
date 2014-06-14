@@ -21,6 +21,9 @@ namespace DB
         Client getClientById(String id);
         Client getClientByName(String name);
 
+        ChequeFidelite getChequeFideliteById(String id);
+        List<ChequeFidelite> getChequesFideliteByClient(Client client);
+        bool insertChequeFidelite(ChequeFidelite cheque);
 
         /* ---------------------- */
 

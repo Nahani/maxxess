@@ -7,14 +7,13 @@ namespace DB
 {
     public class Client
     {
-
-        String id;
-        String nom;
-        String nature;
-        String adresse1;
-        String adresse2;
-        String codePostal;
-        String ville;
+        private String id;
+        private String nom;
+        private String nature;
+        private String adresse1;
+        private String adresse2;
+        private String codePostal;
+        private String ville;
 
         public Client(String id, String nom, String nature, String adresse1, String adresse2, String codePostal, String ville)
         {
@@ -26,7 +25,6 @@ namespace DB
             this.codePostal = codePostal;
             this.ville = ville;
         }
-
 
         public String ID
         {

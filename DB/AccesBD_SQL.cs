@@ -42,7 +42,6 @@ namespace DB
             }
         }
 
-
         public Client getClientById(String id)
         {
             String req = null;
@@ -75,7 +74,56 @@ namespace DB
             return targeted_user;
         }
 
+        public ChequeFidelite getChequeFideliteById(String id){
+            String req = null;
+            ChequeFidelite targeted_cheque = null;
+            
+            req = "SELECT * FROM CHEQUE_FIDELITE WHERE id='" + id + "'";
+           
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if (reader.Read())
+            {
+                Client associated_client = getClientById(reader.GetString(3));
+                targeted_cheque = new ChequeFidelite(reader.GetString(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client, 
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6));
+            }
+            Connexion.close();
+            return targeted_cheque;
+        }
+    
+        public List<ChequeFidelite> getChequesFideliteByClient(Client client)
+        {
+            String req = "SELECT * FROM CHEQUE_FIDELITE WHERE t_auxiliaire='" + client.ID + "';";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            List<ChequeFidelite> result = new List<ChequeFidelite>();
+            while (reader.Read())
+                result.Add(new ChequeFidelite(reader.GetString(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6)));
+            Connexion.close();
+            return result;
+        }
 
+        public bool insertChequeFidelite(ChequeFidelite cheque)
+        {
+            bool flag = false;
+            if (getChequeFideliteById(cheque.ID) == null)
+            {
+                SqlCommand req = new SqlCommand(
+               "INSERT INTO CHEQUE_FIDELITE (id, montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin) " +
+               "VALUES(@id, @montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin)", Connexion.Connection);
+               
+                req.Parameters.Add("@id", SqlDbType.NChar, cheque.ID.Length).Value = cheque.ID;
+                req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
+                req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
+                req.Parameters.Add("@t_auxiliaire", SqlDbType.NChar, cheque.Client.ID.Length).Value = cheque.Client.ID;
+                req.Parameters.Add("@date_deb_val", SqlDbType.DateTime).Value = cheque.DateDebutValidite;
+                req.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
+                req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
+
+                flag = Connexion.execute_Request(req);
+            }
+            return flag;
+        }
      
 
         /* 

@@ -17,6 +17,12 @@ namespace DB
             c = access.getClientByName("Polo");
             Console.WriteLine(c.Adresse1);
 
+            ChequeFidelite cf = new ChequeFidelite("01903920", 140.093, "Nolan Potier le conquérant", c, DateTime.Now, DateTime.Now, "BAGNOLE SUR SEIZE");
+            access.insertChequeFidelite(cf);
+
+            Console.WriteLine(c.ID);
+
+            Console.WriteLine(access.getChequesFideliteByClient(c).Count);
         }
 
     }

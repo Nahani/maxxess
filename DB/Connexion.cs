@@ -106,7 +106,7 @@ namespace DB
         static public SqlDataReader execute_Select(String str)
         {
             open();
-            SqlDataReader result = new SqlCommand(str, connection).ExecuteReader(CommandBehavior.SequentialAccess);
+            SqlDataReader result = new SqlCommand(str, connection).ExecuteReader(CommandBehavior.Default);
             return result;
         }
     }
