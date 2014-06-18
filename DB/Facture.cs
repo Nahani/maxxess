@@ -23,7 +23,7 @@ namespace DB
             this.Client = client;
 
             //Calculer le montant du chèque cadeau
-            this.ChequeCadeau = 0;
+            this.ChequeCadeau = total * 0.04;
         }
         public int IdFacure
         {

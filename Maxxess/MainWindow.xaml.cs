@@ -26,16 +26,24 @@ namespace Maxxess
         {
             facturesCollection =  new ObservableCollection<Facture>();
 
+            
+
             List<Facture> factures = App.access.getAllFactures();
             foreach (Facture f in factures)
             {
                 facturesCollection.Add(f);
             }
             InitializeComponent();
+            Bt_Nom.Background = Brushes.Red;
         }
 
         public ObservableCollection<Facture> FacturesCollection
         { get { return facturesCollection; } }
+
+        private void txt_search_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txt_search.Text = "";
+        }
 
 
     }
