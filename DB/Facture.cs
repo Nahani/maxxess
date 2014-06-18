@@ -11,6 +11,9 @@ namespace DB
         private String libelle;
         private double total;              
         private Client client;
+        private double chequeCadeau;
+
+       
 
         public Facture(int idFacture, String libelle, double total, Client client)
         {
@@ -18,6 +21,9 @@ namespace DB
             this.Libelle = libelle;
             this.Total = total;
             this.Client = client;
+
+            //Calculer le montant du chèque cadeau
+            this.ChequeCadeau = 0;
         }
         public int IdFacure
         {
@@ -41,6 +47,12 @@ namespace DB
         {
             get { return client; }
             set { client = value; }
+        }
+
+        public double ChequeCadeau
+        {
+            get { return chequeCadeau; }
+            set { chequeCadeau = value; }
         }
 
 

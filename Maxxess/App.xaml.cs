@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DB;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -12,5 +13,6 @@ namespace Maxxess
     /// </summary>
     public partial class App : Application
     {
+        public static AccesBD_SQL access = AccesBD_SQL.Instance;
     }
 }

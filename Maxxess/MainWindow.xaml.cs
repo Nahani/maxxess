@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DB;
+using System.Collections.ObjectModel;
 
 namespace Maxxess
 {
@@ -19,9 +21,22 @@ namespace Maxxess
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<Facture> facturesCollection;
         public MainWindow()
         {
+            facturesCollection =  new ObservableCollection<Facture>();
+
+            List<Facture> factures = App.access.getAllFactures();
+            foreach (Facture f in factures)
+            {
+                facturesCollection.Add(f);
+            }
             InitializeComponent();
         }
+
+        public ObservableCollection<Facture> FacturesCollection
+        { get { return facturesCollection; } }
+
+
     }
 }
