@@ -69,6 +69,16 @@ namespace DB
             get { return date.ToShortDateString(); }
         }
 
+        public String TotalEuros
+        {
+            get { return total + " €"; }
+        }
+
+        public String ChequeCadeauEuros
+        {
+            get { return chequeCadeau + " €"; }
+        }
+
 
     }
 }
