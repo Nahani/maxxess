@@ -43,6 +43,7 @@ namespace Maxxess
             searchBy = SearchBy.Nom;
             bt_CB.Visibility = Visibility.Hidden;
             bt_Cheque.Visibility = Visibility.Hidden;
+            bt_AllFactures.Background = Brushes.LightGreen;
         }
 
         public ObservableCollection<Facture> FacturesCollection
@@ -139,6 +140,9 @@ namespace Maxxess
             bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
             bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
 
+            bt_FactureJour.Background = Brushes.LightGreen;
+            bt_AllFactures.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+
         }
 
         private void bt_AllFactures_Click(object sender, RoutedEventArgs e)
@@ -156,6 +160,10 @@ namespace Maxxess
             bt_CB.Visibility = Visibility.Hidden;
             bt_Cheque.IsEnabled = false;
             bt_Cheque.Visibility = Visibility.Hidden;
+
+            BrushConverter bc = new BrushConverter();
+            bt_AllFactures.Background = Brushes.LightGreen;
+            bt_FactureJour.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
         }
 
         private void bt_CB_Click(object sender, RoutedEventArgs e)
