@@ -4,7 +4,7 @@
         Title="Générer un chèque cadeau" Height="300" Width="600"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid Background="#FFEEEEEE">
         <TextBox x:Name="txt_Name" HorizontalAlignment="Left" Height="23" Margin="86,12,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Label Content="Bénéficiaire:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Valeur:" HorizontalAlignment="Left" Margin="407,17,0,0" VerticalAlignment="Top" Width="63"/>

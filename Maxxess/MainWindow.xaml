@@ -37,8 +37,8 @@
         <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1">
 
         </Button>
-        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="601,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
-        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="482,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
+        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="678,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
+        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="560,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
 
     </Grid>
 </Window>
