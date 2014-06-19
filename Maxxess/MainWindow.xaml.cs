@@ -41,6 +41,8 @@ namespace Maxxess
             InitializeComponent();
             Bt_Nom.Background = Brushes.Red;
             searchBy = SearchBy.Nom;
+            bt_CB.Visibility = Visibility.Hidden;
+            bt_Cheque.Visibility = Visibility.Hidden;
         }
 
         public ObservableCollection<Facture> FacturesCollection
@@ -118,11 +120,24 @@ namespace Maxxess
         private void bt_FactureJour_Click(object sender, RoutedEventArgs e)
         {
             facturesCollection.Clear();
-            factures = App.access.getFactureOfDay();
+            factures = App.access.getFacturesOfDay();
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            factures.Reverse();
+            double totalJour = 0;
             foreach (Facture f in factures)
             {
+                totalJour += f.Total;
                 facturesCollection.Add(f);
             }
+            lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
+            bt_CB.IsEnabled = true;
+            bt_CB.Visibility = Visibility.Visible; 
+            bt_Cheque.IsEnabled = true;
+            bt_Cheque.Visibility = Visibility.Visible;
+
+            BrushConverter bc = new BrushConverter();
+            bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
 
         }
 
@@ -135,6 +150,66 @@ namespace Maxxess
             foreach (Facture f in factures)
             {
                 facturesCollection.Add(f);
+            }
+            lb_TotalJour.Content = "";
+            bt_CB.IsEnabled = false;
+            bt_CB.Visibility = Visibility.Hidden;
+            bt_Cheque.IsEnabled = false;
+            bt_Cheque.Visibility = Visibility.Hidden;
+        }
+
+        private void bt_CB_Click(object sender, RoutedEventArgs e)
+        {
+            if (bt_CB.Background != Brushes.CornflowerBlue) { 
+                facturesCollection.Clear();
+                factures = App.access.getFacturesOfDayByMode("CB");
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                double totalJour = 0;
+                foreach (Facture f in factures)
+                {
+                    totalJour += f.Total;
+                    facturesCollection.Add(f);
+                }
+                lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
+                bt_CB.Background = Brushes.CornflowerBlue;
+                BrushConverter bc = new BrushConverter();
+                bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            }
+            else
+            {
+                BrushConverter bc = new BrushConverter();
+                bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+                bt_FactureJour_Click(sender, e);
+
+            }
+        }
+
+        private void bt_Cheque_Click(object sender, RoutedEventArgs e)
+        {
+            if (bt_Cheque.Background != Brushes.CornflowerBlue)
+            {
+                facturesCollection.Clear();
+                factures = App.access.getFacturesOfDayByMode("CHQ");
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                double totalJour = 0;
+                foreach (Facture f in factures)
+                {
+                    totalJour += f.Total;
+                    facturesCollection.Add(f);
+                }
+                lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
+                bt_Cheque.Background = Brushes.CornflowerBlue;
+                BrushConverter bc = new BrushConverter();
+                bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            }
+            else
+            {
+                BrushConverter bc = new BrushConverter();
+                bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+                bt_FactureJour_Click(sender, e);
+
             }
         }
 

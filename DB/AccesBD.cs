@@ -32,7 +32,9 @@ namespace DB
 
         List<Facture> getFactureByNumClient(String id);
 
-        List<Facture> getFactureOfDay();
+        List<Facture> getFacturesOfDay();
+
+        List<Facture> getFacturesOfDayByMode(String mode);
 
 
 

@@ -2,16 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Maxxess" Height="550" Width="800"
+        Title="Maxxess" Height="586" Width="800"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                <GradientStop Color="Black" Offset="1"/>
-                <GradientStop Color="#FF00C5FF"/>
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid Background="#FF00C5FF" Margin="0,0,0,-2">
         <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="792" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
@@ -25,6 +19,8 @@
                                     DisplayMemberBinding="{Binding DateShort}"/>
                     <GridViewColumn Width="80" Header="Montant"
                                     DisplayMemberBinding="{Binding TotalEuros}"/>
+                    <GridViewColumn Width="70" Header="Mode"
+                                    DisplayMemberBinding="{Binding ModeReglement}"/>
                     <GridViewColumn Width="100" Header="Chèque cadeau"
                                     DisplayMemberBinding="{Binding ChequeCadeauEuros}"/>
                 </GridView>
@@ -39,6 +35,9 @@
         </Button>
         <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="678,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
         <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="560,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
+        <Label x:Name="lb_TotalJour" Content="" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.447,-0.654" Width="146"/>
+        <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False"/>
+        <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False"/>
 
     </Grid>
 </Window>

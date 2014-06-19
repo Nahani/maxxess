@@ -13,17 +13,19 @@ namespace DB
         private Client client;
         private double chequeCadeau;
         private DateTime date;
+        private String modeReglement;        
                
 
        
 
-        public Facture(int idFacture, String libelle, double total, DateTime date, Client client)
+        public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, Client client)
         {
             this.IdFacure = idFacture;
             this.Libelle = libelle;
             this.Total = total;
             this.Client = client;
             this.Date = date;
+            this.modeReglement = modeReglement;
 
             //Calculer le montant du chèque cadeau
             this.ChequeCadeau = total * 0.04;
@@ -77,6 +79,12 @@ namespace DB
         public String ChequeCadeauEuros
         {
             get { return chequeCadeau + " €"; }
+        }
+
+        public String ModeReglement
+        {
+            get { return modeReglement; }
+            set { modeReglement = value; }
         }
 
 
