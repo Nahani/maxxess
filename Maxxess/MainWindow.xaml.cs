@@ -16,11 +16,14 @@ using System.Collections.ObjectModel;
 
 namespace Maxxess
 {
+    enum SearchBy { Nom, NumClient };
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        private SearchBy searchBy;
+        private List<Facture> factures;
         private ObservableCollection<Facture> facturesCollection;
         public MainWindow()
         {
@@ -28,13 +31,14 @@ namespace Maxxess
 
             
 
-            List<Facture> factures = App.access.getAllFactures();
+            factures = App.access.getAllFactures();
             foreach (Facture f in factures)
             {
                 facturesCollection.Add(f);
             }
             InitializeComponent();
             Bt_Nom.Background = Brushes.Red;
+            searchBy = SearchBy.Nom;
         }
 
         public ObservableCollection<Facture> FacturesCollection
@@ -43,6 +47,70 @@ namespace Maxxess
         private void txt_search_GotFocus(object sender, RoutedEventArgs e)
         {
             txt_search.Text = "";
+        }
+
+        private void Bt_numClient_Click(object sender, RoutedEventArgs e)
+        {
+            BrushConverter bc = new BrushConverter();
+            Bt_Nom.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            Bt_numClient.Background = Brushes.Red;
+            searchBy = SearchBy.NumClient;
+        }
+
+        private void Bt_Nom_Click(object sender, RoutedEventArgs e)
+        {
+            BrushConverter bc = new BrushConverter();
+            Bt_Nom.Background = Brushes.Red; 
+            Bt_numClient.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            searchBy = SearchBy.Nom;
+        }
+
+        private void txt_search_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                
+                
+                switch (searchBy)
+                {
+                    
+                    case SearchBy.Nom:
+                        facturesCollection.Clear();
+                        factures = App.access.getFactureByName(txt_search.Text);
+                        foreach (Facture f in factures)
+                        {
+                            facturesCollection.Add(f);
+                        }
+                        break;
+                    case SearchBy.NumClient:
+                        facturesCollection.Clear();
+                        factures = App.access.getFactureByNumClient(txt_search.Text);
+                        foreach (Facture f in factures)
+                        {
+                            facturesCollection.Add(f);
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+            DependencyObject dep = (DependencyObject)e.OriginalSource;
+
+            while ((dep != null) && !(dep is ListViewItem))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            if (dep == null)
+                return;
+
+            Facture item = (Facture)listViewFactures.ItemContainerGenerator.ItemFromContainer(dep);
+
+            FactureChequeWindow window = new FactureChequeWindow(item);
+            window.Show();
         }
 
 

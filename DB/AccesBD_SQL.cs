@@ -74,6 +74,44 @@ namespace DB
             return targeted_user;
         }
 
+        public List<Facture> getFactureByName(String nom)
+        {
+            List<Facture> result = new List<Facture>();
+            Client client = getClientByName(nom);
+            if (client != null) 
+            { 
+                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1;";
+                SqlDataReader reader = Connexion.execute_Select(req);            
+              
+                while (reader.Read())
+                {                
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), client));
+                }
+
+                Connexion.close();
+            }
+            return result;
+
+        }
+
+        public List<Facture> getFactureByNumClient(String id)
+        {
+            List<Facture> result = new List<Facture>();
+            
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + id + "' and E_NUMLIGNE=1;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+
+            while (reader.Read())
+            {
+                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), getClientById(id)));
+            }
+
+            Connexion.close();
+            
+            return result;
+
+        }
+
         public List<Facture> getAllFactures()
         {
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1;";

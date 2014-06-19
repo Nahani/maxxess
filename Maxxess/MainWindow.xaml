@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="MainWindow" Height="550" Width="725">
+        Title="Maxxess" Height="550" Width="725">
     <Grid>
-        <ListView ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="707">
+        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="707" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="140" Header="Nom" 
@@ -20,12 +20,17 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,0,0,0">
+        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,0,0,0" Click="Bt_Nom_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
         </Button>
-        <TextBox x:Name="txt_search" HorizontalAlignment="Left" Height="23" Margin="10,25,0,0" TextWrapping="Wrap" Text="Rechercher un client" VerticalAlignment="Top" Width="134" GotFocus="txt_search_GotFocus"/>
+        <TextBox x:Name="txt_search" HorizontalAlignment="Left" Height="23" Margin="10,29,0,0" TextWrapping="Wrap" Text="Rechercher un client" VerticalAlignment="Top" Width="134" GotFocus="txt_search_GotFocus" KeyDown="txt_search_KeyDown"/>
+        <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="121,0,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click">
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
 
     </Grid>
 </Window>
