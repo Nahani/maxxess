@@ -12,15 +12,18 @@ namespace DB
         private double total;              
         private Client client;
         private double chequeCadeau;
+        private DateTime date;
+               
 
        
 
-        public Facture(int idFacture, String libelle, double total, Client client)
+        public Facture(int idFacture, String libelle, double total, DateTime date, Client client)
         {
             this.IdFacure = idFacture;
             this.Libelle = libelle;
             this.Total = total;
             this.Client = client;
+            this.Date = date;
 
             //Calculer le montant du chèque cadeau
             this.ChequeCadeau = total * 0.04;
@@ -53,6 +56,17 @@ namespace DB
         {
             get { return chequeCadeau; }
             set { chequeCadeau = value; }
+        }
+
+        public DateTime Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+
+        public String DateShort
+        {
+            get { return date.ToShortDateString(); }
         }
 
 

@@ -13,6 +13,8 @@
                                     DisplayMemberBinding="{Binding Client.Adresse1}"/>
                     <GridViewColumn Width="140" Header="Numéro Client" 
                                     DisplayMemberBinding="{Binding Client.ID}"/>
+                    <GridViewColumn Width="140" Header="Date" 
+                                    DisplayMemberBinding="{Binding DateShort}"/>
                     <GridViewColumn Width="140" Header="Montant Total"
                                     DisplayMemberBinding="{Binding Total}"/>
                     <GridViewColumn Width="140" Header="Chèque Cadeau"
@@ -20,17 +22,15 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,0,0,0" Click="Bt_Nom_Click">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
+        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,4,0,0" Click="Bt_Nom_Click">
+            
         </Button>
         <TextBox x:Name="txt_search" HorizontalAlignment="Left" Height="23" Margin="10,29,0,0" TextWrapping="Wrap" Text="Rechercher un client" VerticalAlignment="Top" Width="134" GotFocus="txt_search_GotFocus" KeyDown="txt_search_KeyDown"/>
-        <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="121,0,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
+        <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1">
+            
         </Button>
+        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="601,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
+        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="482,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
 
     </Grid>
 </Window>

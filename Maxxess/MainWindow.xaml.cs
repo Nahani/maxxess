@@ -32,6 +32,8 @@ namespace Maxxess
             
 
             factures = App.access.getAllFactures();
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            factures.Reverse();
             foreach (Facture f in factures)
             {
                 facturesCollection.Add(f);
@@ -111,6 +113,29 @@ namespace Maxxess
 
             FactureChequeWindow window = new FactureChequeWindow(item);
             window.Show();
+        }
+
+        private void bt_FactureJour_Click(object sender, RoutedEventArgs e)
+        {
+            facturesCollection.Clear();
+            factures = App.access.getFactureOfDay();
+            foreach (Facture f in factures)
+            {
+                facturesCollection.Add(f);
+            }
+
+        }
+
+        private void bt_AllFactures_Click(object sender, RoutedEventArgs e)
+        {
+            facturesCollection.Clear();
+            factures = App.access.getAllFactures();
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            factures.Reverse();
+            foreach (Facture f in factures)
+            {
+                facturesCollection.Add(f);
+            }
         }
 
 

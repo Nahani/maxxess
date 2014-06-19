@@ -85,7 +85,7 @@ namespace DB
               
                 while (reader.Read())
                 {                
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), client));
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), client));
                 }
 
                 Connexion.close();
@@ -103,13 +103,34 @@ namespace DB
 
             while (reader.Read())
             {
-                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), getClientById(id)));
+                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), getClientById(id)));
             }
 
             Connexion.close();
             
             return result;
 
+        }
+
+        public List<Facture> getFactureOfDay()
+        {
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now.AddDays(1);
+
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+
+            List<Facture> result = new List<Facture>();
+            while (reader.Read())
+            {
+                
+                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), getClientById(reader.GetString(5))));
+                
+
+            }
+
+            Connexion.close();
+            return result;
         }
 
         public List<Facture> getAllFactures()
@@ -124,7 +145,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7))));
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7))));
                 }
                 
             }
@@ -173,7 +194,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7)));
+                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7)));
                 }
 
             }

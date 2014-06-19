@@ -28,6 +28,12 @@ namespace DB
         List<ChequeFidelite> getChequesFideliteByClient(Client client);
         bool insertChequeFidelite(ChequeFidelite cheque);
 
+        List<Facture> getFactureByName(String nom);
+
+        List<Facture> getFactureByNumClient(String id);
+
+        List<Facture> getFactureOfDay();
+
 
 
         /* ---------------------- */
