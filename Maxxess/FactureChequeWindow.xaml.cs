@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PDF;
 
 namespace Maxxess
 {
@@ -31,6 +32,16 @@ namespace Maxxess
             InitializeComponent();
             txt_Name.Text = facture.Client.Nom;
             lb_valeur.Content = facture.ChequeCadeau + "€";
+        }
+
+        private void bt_generer_Click(object sender, RoutedEventArgs e)
+        {
+            AccesBD_SQL access = AccesBD_SQL.Instance;
+            ChequeFidelite aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client, 
+                DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS DARDILLY");
+           
+            access.insertChequeFidelite(aChequeFidelite);
+            PDFUtils.storePDF(aChequeFidelite);
         }
     }
 }

@@ -15,6 +15,17 @@ namespace DB
         private DateTime dateFinValidite;
         private String magasin;
 
+        public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
+        {
+            this.id = null;
+            this.montant = montant;
+            this.beneficiaire = beneficiaire;
+            this.client = client;
+            this.dateDebutValidite = dateDebutValidite;
+            this.dateFinValidite = dateFinValidite;
+            this.magasin = magasin;
+        }
+
         public ChequeFidelite(String id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
         {
             this.id = id;

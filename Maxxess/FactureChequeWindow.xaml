@@ -9,7 +9,7 @@
         <Label Content="Bénéficiaire:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Valeur:" HorizontalAlignment="Left" Margin="407,17,0,0" VerticalAlignment="Top" Width="63"/>
         <Label x:Name="lb_valeur" Content="Label" HorizontalAlignment="Left" Margin="470,17,0,0" VerticalAlignment="Top" Width="65"/>
-        <Button x:Name="bt_generer" Content="Générer" HorizontalAlignment="Left" Margin="470,221,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="bt_generer" Content="Générer" HorizontalAlignment="Left" Margin="470,221,0,0" VerticalAlignment="Top" Width="75" Click="bt_generer_Click" />
 
     </Grid>
 </Window>

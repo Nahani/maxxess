@@ -26,7 +26,7 @@ namespace DB
 
         ChequeFidelite getChequeFideliteById(String id);
         List<ChequeFidelite> getChequesFideliteByClient(Client client);
-        bool insertChequeFidelite(ChequeFidelite cheque);
+        int insertChequeFidelite(ChequeFidelite cheque);
 
         List<Facture> getFactureByName(String nom);
 

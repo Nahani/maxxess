@@ -225,16 +225,15 @@ namespace DB
         }
 
 
-        public bool insertChequeFidelite(ChequeFidelite cheque)
+        public int insertChequeFidelite(ChequeFidelite cheque)
         {
-            bool flag = false;
+            int result = -1;
             if (getChequeFideliteById(cheque.ID) == null)
             {
                 SqlCommand req = new SqlCommand(
-               "INSERT INTO CHEQUE_FIDELITE (id, montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin) " +
-               "VALUES(@id, @montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin)", Connexion.Connection);
+               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin) " +
+               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin)", Connexion.Connection);
                
-                req.Parameters.Add("@id", SqlDbType.NChar, cheque.ID.Length).Value = cheque.ID;
                 req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
                 req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
                 req.Parameters.Add("@t_auxiliaire", SqlDbType.NChar, cheque.Client.ID.Length).Value = cheque.Client.ID;
@@ -242,9 +241,17 @@ namespace DB
                 req.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
                 req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
 
-                flag = Connexion.execute_Request(req);
+                Connexion.execute_Request(req);
+
+                String max = "SELECT MAX(id) FROM CHEQUE_FIDELITE;";
+                SqlDataReader reader = Connexion.execute_Select(max);
+                if (reader.Read())
+                {
+                    result = reader.GetInt32(0);
+                    cheque.ID = Convert.ToString(result);
+                }
             }
-            return flag;
+            return result;
         }
      
 

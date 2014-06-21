@@ -14,6 +14,13 @@ namespace DB
         private String adresse2;
         private String codePostal;
         private String ville;
+        private int p;
+        private string p_2;
+        private string p_3;
+        private string p_4;
+        private string p_5;
+        private string p_6;
+        private string p_7;
 
         public Client(String id, String nom, String nature, String adresse1, String adresse2, String codePostal, String ville)
         {
@@ -24,6 +31,18 @@ namespace DB
             this.adresse2 = adresse2;
             this.codePostal = codePostal;
             this.ville = ville;
+        }
+
+        public Client(int p, string p_2, string p_3, string p_4, string p_5, string p_6, string p_7)
+        {
+            // TODO: Complete member initialization
+            this.p = p;
+            this.p_2 = p_2;
+            this.p_3 = p_3;
+            this.p_4 = p_4;
+            this.p_5 = p_5;
+            this.p_6 = p_6;
+            this.p_7 = p_7;
         }
 
         public String ID
