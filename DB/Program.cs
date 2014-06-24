@@ -14,8 +14,8 @@ namespace DB
             Client c = access.getClientById("001");
             Console.WriteLine(c.Adresse1);
 
-            c = access.getClientByName("Polo");
-            Console.WriteLine(c.Adresse1);
+           /* c = access.getClientByName("Polo");
+            Console.WriteLine(c.Adresse1);*/
 
 
             List<Facture> factures = access.getAllFactures();

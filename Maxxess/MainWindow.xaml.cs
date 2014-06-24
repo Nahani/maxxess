@@ -221,6 +221,14 @@ namespace Maxxess
             }
         }
 
+        private void bt_Clients_Click(object sender, RoutedEventArgs e)
+        {
+            Clients view = new Clients();
+            App.Current.MainWindow = view;
+            this.Close();
+            view.Show();
+        }
+
 
     }
 }

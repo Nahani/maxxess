@@ -19,7 +19,9 @@ namespace DB
     {
 
         Client getClientById(String id);
-        Client getClientByName(String name);
+        List<Client> getClientByName(String name);
+
+        List<Client> getAllClients();
 
         List<Facture> getAllFactures();
         Facture getFacture(int idFacture);

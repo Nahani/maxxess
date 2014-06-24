@@ -58,27 +58,43 @@ namespace DB
             return targeted_user;
         }
 
-        public Client getClientByName(String nom)
+        public List<Client> getClientByName(String nom)
         {
             String req = null;
-            Client targeted_user = null;
+            List<Client> targeted_user = new List<Client>();
              
             req = "SELECT * FROM TIERS WHERE T_LIBELLE LIKE '%" + nom + "%'";
             
             SqlDataReader reader = Connexion.execute_Select(req);
-            if (reader.Read())
+            while (reader.Read())
             {
-                targeted_user = new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7));
+                targeted_user.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7)));
             }
             Connexion.close();
             return targeted_user;
         }
 
+        public List<Client> getAllClients()
+        {
+            String req = null;
+            List<Client> resultat = new List<Client>();
+
+            req = "SELECT * FROM TIERS;";
+
+            SqlDataReader reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                resultat.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7)));
+            }
+            Connexion.close();
+            return resultat;
+        }
+
         public List<Facture> getFactureByName(String nom)
         {
             List<Facture> result = new List<Facture>();
-            Client client = getClientByName(nom);
-            if (client != null) 
+            List<Client> clients = getClientByName(nom);
+            foreach(Client client in clients ) 
             { 
                 String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1;";
                 SqlDataReader reader = Connexion.execute_Select(req);            
