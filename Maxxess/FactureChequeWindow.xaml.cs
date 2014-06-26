@@ -38,7 +38,7 @@ namespace Maxxess
         {
             AccesBD_SQL access = AccesBD_SQL.Instance;
             ChequeFidelite aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client, 
-                DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS DARDILLY");
+                DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE");
            
             access.insertChequeFidelite(aChequeFidelite);
             PDFUtils.storePDF(aChequeFidelite);

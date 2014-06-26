@@ -105,7 +105,7 @@ namespace PDF
 
             // Magasin header
             gfx.DrawString(magasin.ToUpperInvariant(),
-              small, XBrushes.Red, 465, 55);
+              small, XBrushes.Red, new XRect(461, 53, 100, 0), XStringFormats.Center);
 
             // Montant header
             if (amount >= 100)
