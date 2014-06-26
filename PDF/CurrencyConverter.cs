@@ -160,9 +160,9 @@ namespace PDF
                 reste -= y * i;
                 dix = false;
             } // end for
-            if (lettre.Length == 0) lettre += "zéro";
+            if (lettre.Length == 0) lettre += "zéro ";
 
-            return PDFUtils.UppercaseFirst(lettre + " euros");
+            return PDFUtils.UppercaseFirst(lettre + "euros");
         }
     }
 }

@@ -54,8 +54,12 @@ namespace PDF
 
             CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
-            float amount = (int)aChequeFidelite.Montant;
-            string nom = aChequeFidelite.Beneficiaire;
+            float amount = 7;//(int)aChequeFidelite.Montant;
+            string civilite = aChequeFidelite.Client.Civilite;
+            string nomcomplet = aChequeFidelite.Beneficiaire.Replace(",","");
+            string prenom = nomcomplet.Split(new char[] {' '})[0];
+            string nom = nomcomplet.Split(new char[] { ' ' })[1];
+            nomcomplet = civilite + " " + prenom + " " + nom.ToUpper();
             string compte = aChequeFidelite.Client.ID;
             //DateTime dateReception = aChequeFidelite.DateReception;
             DateTime dateDebut = aChequeFidelite.DateDebutValidite;
@@ -64,7 +68,7 @@ namespace PDF
 
             XFont classical = new XFont("Times New Roman", 12);
             XFont small = new XFont("Times New Roman", 9);
-            XFont big_date = new XFont("Times New Roman", 13, XFontStyle.Bold);
+            XFont big_date = new XFont("Times New Roman", 11, XFontStyle.Bold);
 
             int amount_size_text = 55;
             if (amount >= 100)
@@ -80,16 +84,16 @@ namespace PDF
               classical, XBrushes.Red, 123, 49);
 
             // Bénéficiaire header
-            gfx.DrawString(nom,
-              classical, XBrushes.Red, 69, 84);
+            gfx.DrawString(nomcomplet,
+              classical, XBrushes.Red, 69, 83);
 
             // Date header
-            gfx.DrawString(dateDebut.AddDays(-1).ToString("dd MMMM yyyy", francais) + " à " + UppercaseFirst(magasin),
-              classical, XBrushes.Red, 270, 84);
+            gfx.DrawString(dateDebut.AddDays(-1).ToString("dd MMMM yyyy", francais) + " à Nice" /*+ UppercaseFirst(magasin)*/,
+              classical, XBrushes.Red, 272, 83);
 
             // N° de compte header
             gfx.DrawString(compte,
-              classical, XBrushes.Red, 84, 101);
+              classical, XBrushes.Red, 103, 101);
 
             // Début validité header
             gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
@@ -120,24 +124,29 @@ namespace PDF
                  big_amount, XBrushes.Black, new XRect(455, 110, 100, 0));
             }
 
+            // Numéro de chèque
+            gfx.DrawString(aChequeFidelite.ID,
+                 classical, XBrushes.Black, new XRect(475, 200, 100, 0));
+         
+
             // Date second
-            gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
-             big_date, XBrushes.Red, 228, 239);
+            gfx.DrawString(dateFin.ToString("dd MMMM yyyy", francais),
+             big_date, XBrushes.Red, new XRect(228, 235, 100, 0), XStringFormats.Center);
 
             // Client second
-            gfx.DrawString(nom,
+            gfx.DrawString(nomcomplet,
              classical, XBrushes.Black, 38, 428);
 
             // Montant chiffre second
             if (amount < 10)
             {
                 gfx.DrawString(amount + "€",
-                    big_amount_2, XBrushes.Red, 145, 461);
+                    big_amount_2, XBrushes.Red, new XRect(151, 461, 100, 0));
             }
             else
             {
                 gfx.DrawString(amount + "€",
-                    big_amount_2, XBrushes.Red, 137, 461);
+                    big_amount_2, XBrushes.Red, new XRect(146, 461, 100, 0));
             }
 
             PdfDocumentSecurityLevel level = document.SecuritySettings.DocumentSecurityLevel;

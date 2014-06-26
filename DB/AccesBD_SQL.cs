@@ -52,7 +52,7 @@ namespace DB
             SqlDataReader reader = Connexion.execute_Select(req);
             if (reader.Read())
             {
-                targeted_user = new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7));
+                targeted_user = new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7), reader.GetString(86));
             }
             Connexion.close();
             return targeted_user;
@@ -68,7 +68,7 @@ namespace DB
             SqlDataReader reader = Connexion.execute_Select(req);
             while (reader.Read())
             {
-                targeted_user.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7)));
+                targeted_user.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7), reader.GetString(86)));
             }
             Connexion.close();
             return targeted_user;
@@ -84,7 +84,7 @@ namespace DB
             SqlDataReader reader = Connexion.execute_Select(req);
             while (reader.Read())
             {
-                resultat.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7)));
+                resultat.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7), reader.GetString(86)));
             }
             Connexion.close();
             return resultat;
@@ -182,7 +182,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7))));
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86))));
                 }
                 
             }
@@ -231,7 +231,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7)));
+                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)));
                 }
 
             }
