@@ -59,7 +59,7 @@ namespace PDF
             string nomcomplet = aChequeFidelite.Beneficiaire.Replace(",","");
             string prenom = nomcomplet.Split(new char[] {' '})[0];
             string nom = nomcomplet.Split(new char[] { ' ' })[1];
-            nomcomplet = civilite + " " + prenom + " " + nom.ToUpper();
+            nomcomplet = civilite + prenom + " " + nom.ToUpper();
             string compte = aChequeFidelite.Client.ID;
             //DateTime dateReception = aChequeFidelite.DateReception;
             DateTime dateDebut = aChequeFidelite.DateDebutValidite;
@@ -130,11 +130,11 @@ namespace PDF
          
 
             // Date second
-            gfx.DrawString(dateFin.ToString("dd MMMM yyyy", francais),
+            gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
              big_date, XBrushes.Red, new XRect(228, 235, 100, 0), XStringFormats.Center);
 
             // Client second
-            gfx.DrawString(nomcomplet,
+            gfx.DrawString(nomcomplet +",",
              classical, XBrushes.Black, 38, 428);
 
             // Montant chiffre second
