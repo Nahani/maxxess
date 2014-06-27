@@ -50,7 +50,20 @@ namespace Maxxess
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            DependencyObject dep = (DependencyObject)e.OriginalSource;
 
+            while ((dep != null) && !(dep is ListViewItem))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            if (dep == null)
+                return;
+
+            Client item = (Client)listViewClients.ItemContainerGenerator.ItemFromContainer(dep);
+
+            ChequesClientView window = new ChequesClientView(item);
+            window.Show();
         }
 
         private void txt_search_GotFocus(object sender, RoutedEventArgs e)

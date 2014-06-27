@@ -200,7 +200,7 @@ namespace DB
             if (reader.Read())
             {
                 Client associated_client = getClientById(reader.GetString(3));
-                targeted_cheque = new ChequeFidelite(reader.GetString(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client, 
+                targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client, 
                     reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6));
             }
             Connexion.close();
@@ -213,7 +213,7 @@ namespace DB
             SqlDataReader reader = Connexion.execute_Select(req);
             List<ChequeFidelite> result = new List<ChequeFidelite>();
             while (reader.Read())
-                result.Add(new ChequeFidelite(reader.GetString(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
+                result.Add(new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
                     reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6)));
             Connexion.close();
             return result;
@@ -244,8 +244,7 @@ namespace DB
         public int insertChequeFidelite(ChequeFidelite cheque)
         {
             int result = -1;
-            if (getChequeFideliteById(cheque.ID) == null)
-            {
+           
                 SqlCommand req = new SqlCommand(
                "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin) " +
                "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin)", Connexion.Connection);
@@ -264,9 +263,9 @@ namespace DB
                 if (reader.Read())
                 {
                     result = reader.GetInt32(0);
-                    cheque.ID = Convert.ToString(result);
+                    cheque.ID = Convert.ToInt32(result);
                 }
-            }
+            
             return result;
         }
      

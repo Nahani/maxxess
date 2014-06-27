@@ -7,7 +7,7 @@ namespace DB
 {
     public class ChequeFidelite
     {
-        private String id;
+        private int id;
         private Double montant;
         private String beneficiaire;
         private Client client;
@@ -17,7 +17,7 @@ namespace DB
 
         public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
         {
-            this.id = null;
+            this.id = 0;
             this.montant = montant;
             this.beneficiaire = beneficiaire;
             this.client = client;
@@ -26,7 +26,7 @@ namespace DB
             this.magasin = magasin;
         }
 
-        public ChequeFidelite(String id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
+        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
         {
             this.id = id;
             this.montant = montant;
@@ -37,7 +37,7 @@ namespace DB
             this.magasin = magasin;
         }
 
-        public String ID
+        public int ID
         {
             get { return id; }
             set { id = value; }
@@ -71,6 +71,16 @@ namespace DB
         {
             get { return dateFinValidite; }
             set { dateFinValidite = value; }
+        }
+
+        public String Validite
+        {
+            get { return "Du " + DateDebutValidite.ToShortDateString() + " au " + DateFinValidite.ToShortDateString(); }
+        }
+
+        public String MontantEuros
+        {
+            get { return Montant + "€"; }
         }
 
         public String Magasin

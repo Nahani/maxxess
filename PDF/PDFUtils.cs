@@ -93,7 +93,7 @@ namespace PDF
 
             // N° de compte header
             gfx.DrawString(compte,
-              classical, XBrushes.Red, 103, 101);
+              classical, XBrushes.Red, new XRect(103, 101, 100, 0));
 
             // Début validité header
             gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
@@ -125,7 +125,7 @@ namespace PDF
             }
 
             // Numéro de chèque
-            gfx.DrawString(aChequeFidelite.ID,
+            gfx.DrawString(aChequeFidelite.ID.ToString(),
                  classical, XBrushes.Black, new XRect(475, 200, 100, 0));
          
 
