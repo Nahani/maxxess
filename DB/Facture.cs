@@ -5,6 +5,7 @@ using System.Text;
 
 namespace DB
 {
+    public enum TypePiece { Facture, Ticket };
     public class Facture
     {
         private int idFacure;
@@ -13,12 +14,17 @@ namespace DB
         private Client client;
         private double chequeCadeau;
         private DateTime date;
-        private String modeReglement;        
+        private String modeReglement;
+        private TypePiece type;
+
+        
+
+     
                
 
        
 
-        public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, Client client)
+        public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, TypePiece type, Client client)
         {
             this.IdFacure = idFacture;
             this.Libelle = libelle;
@@ -26,7 +32,7 @@ namespace DB
             this.Client = client;
             this.Date = date;
             this.modeReglement = modeReglement;
-
+            this.type = type;
             //Calculer le montant du chèque cadeau
             this.ChequeCadeau = total * 0.04;
         }
@@ -85,6 +91,12 @@ namespace DB
         {
             get { return modeReglement; }
             set { modeReglement = value; }
+        }
+
+        public TypePiece Type
+        {
+            get { return type; }
+            set { type = value; }
         }
 
 
