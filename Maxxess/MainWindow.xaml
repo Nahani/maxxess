@@ -2,11 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Maxxess - Factures" Height="586" Width="800"
+        Title="Maxxess - Factures" Height="586" Width="859"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2">
-        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="792" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="839" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="160" Header="Nom" 
@@ -23,6 +23,8 @@
                                     DisplayMemberBinding="{Binding ModeReglement}"/>
                     <GridViewColumn Width="100" Header="Chèque cadeau"
                                     DisplayMemberBinding="{Binding ChequeCadeauEuros}"/>
+                    <GridViewColumn Width="50" Header="Généré"
+                                    DisplayMemberBinding="{Binding isChequeAssocieGenere}"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -33,8 +35,8 @@
         <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1">
 
         </Button>
-        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="678,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
-        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="560,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
+        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="719,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
+        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="609,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
         <Label x:Name="lb_TotalJour" Content="" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.447,-0.654" Width="146"/>
         <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False"/>
         <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False"/>

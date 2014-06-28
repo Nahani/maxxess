@@ -182,7 +182,11 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86))));
+                    Facture f =   new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), 
+                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1),
+                            reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    result.Add(f);
                 }
                 
             }
@@ -213,7 +217,7 @@ namespace DB
             {
                 Client associated_client = getClientById(reader.GetString(3));
                 targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8));
             }
             Connexion.close();
             return targeted_cheque;
@@ -226,7 +230,7 @@ namespace DB
             List<ChequeFidelite> result = new List<ChequeFidelite>();
             while (reader.Read())
                 result.Add(new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7)));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8)));
             Connexion.close();
             return result;
         }
@@ -252,6 +256,18 @@ namespace DB
             return result;
         }
 
+        public Boolean chequeFideliteAssocieExists(Facture aFacture)
+        {
+            Boolean result = false;
+            String req = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_"+ aFacture.IdFacure + "'";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if (reader.Read())
+            {
+                result = (reader.GetInt32(0) == 0 ? false : true);
+            }
+            return result;
+        }
+
         public bool bloquerChequeFidelite(ChequeFidelite cheque)
         {
             bool result = false;
@@ -271,8 +287,8 @@ namespace DB
             int result = -1;
            
                 SqlCommand req = new SqlCommand(
-               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin) " +
-               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin)", Connexion.Connection);
+               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference) " +
+               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference)", Connexion.Connection);
                
                 req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
                 req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
@@ -280,6 +296,7 @@ namespace DB
                 req.Parameters.Add("@date_deb_val", SqlDbType.DateTime).Value = cheque.DateDebutValidite;
                 req.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
                 req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
+                req.Parameters.Add("@reference", SqlDbType.NChar, cheque.Reference.Length).Value = cheque.Reference;
 
                 Connexion.execute_Request(req);
 

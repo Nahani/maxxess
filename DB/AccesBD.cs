@@ -40,6 +40,8 @@ namespace DB
 
         bool bloquerChequeFidelite(ChequeFidelite cheque);
 
+        Boolean chequeFideliteAssocieExists(Facture aFacture);
+
         /* ---------------------- */
 
         int Get_Id_Img(int idAlbum, String name);

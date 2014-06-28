@@ -15,8 +15,9 @@ namespace DB
         private DateTime dateFinValidite;
         private String magasin;
         private Boolean bloque;
+        private String reference;
 
-        public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
+        public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, String reference)
         {
             this.id = 0;
             this.montant = montant;
@@ -25,10 +26,11 @@ namespace DB
             this.dateDebutValidite = dateDebutValidite;
             this.dateFinValidite = dateFinValidite;
             this.magasin = magasin;
+            this.reference = reference;
             this.bloque = false;
         }
 
-        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, Boolean bloque)
+        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, Boolean bloque, String reference)
         {
             this.id = id;
             this.montant = montant;
@@ -37,7 +39,13 @@ namespace DB
             this.dateDebutValidite = dateDebutValidite;
             this.dateFinValidite = dateFinValidite;
             this.magasin = magasin;
+            this.reference = reference;
             this.bloque = bloque;
+        }
+
+        public String Type
+        {
+            get { return reference.StartsWith("f") ? "Facture" : "Ticket"; }
         }
 
         public String isBloque
@@ -61,6 +69,12 @@ namespace DB
         {
             get { return montant; }
             set { montant = value; }
+        }
+
+        public String Reference
+        {
+            get { return reference; }
+            set { reference = value; }
         }
 
         public String Beneficiaire

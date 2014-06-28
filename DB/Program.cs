@@ -28,7 +28,7 @@ namespace DB
             Console.WriteLine(facture1.Total);
 
 
-            ChequeFidelite cf = new ChequeFidelite(01903920, 140.093, "Nolan Potier le conquérant", c, DateTime.Now, DateTime.Now, "BAGNOLE SUR SEIZE", false);
+            ChequeFidelite cf = new ChequeFidelite(01903920, 140.093, "Nolan Potier le conquérant", c, DateTime.Now, DateTime.Now, "BAGNOLE SUR SEIZE", false, "f_08");
             access.insertChequeFidelite(cf);
 
             Console.WriteLine(c.ID);

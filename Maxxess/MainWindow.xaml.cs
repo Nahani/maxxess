@@ -29,8 +29,6 @@ namespace Maxxess
         {
             facturesCollection =  new ObservableCollection<Facture>();
 
-            
-
             factures = App.access.getAllFactures();
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
@@ -114,8 +112,20 @@ namespace Maxxess
 
             Facture item = (Facture)listViewFactures.ItemContainerGenerator.ItemFromContainer(dep);
 
-            FactureChequeWindow window = new FactureChequeWindow(item);
-            window.Show();
+            if (item.ChequeAssocieGenere)
+            {
+                System.Windows.Forms.MessageBox.Show("Le chèque cadeau a déjà été généré.",
+                       "Chèque fidélité Maxxess",
+                       System.Windows.Forms.MessageBoxButtons.OK,
+                       System.Windows.Forms.MessageBoxIcon.Question,
+                       System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            }
+            else
+            {
+                FactureChequeWindow window = new FactureChequeWindow(item, this);
+                window.Show();
+            }
+        
         }
 
         private void bt_FactureJour_Click(object sender, RoutedEventArgs e)

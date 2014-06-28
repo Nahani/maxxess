@@ -14,16 +14,11 @@ namespace DB
         private Client client;
         private double chequeCadeau;
         private DateTime date;
+        private Boolean chequeAssocieGenere;
         private String modeReglement;
         private TypePiece type;
 
         
-
-     
-               
-
-       
-
         public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, TypePiece type, Client client)
         {
             this.IdFacure = idFacture;
@@ -36,6 +31,18 @@ namespace DB
             //Calculer le montant du chèque cadeau
             this.ChequeCadeau = total * 0.04;
         }
+
+        public String isChequeAssocieGenere
+        {
+            get { return chequeAssocieGenere ? "Oui" : "Non"; }
+        }
+
+        public Boolean ChequeAssocieGenere
+        {
+            get { return chequeAssocieGenere; }
+            set { chequeAssocieGenere = value; }
+        }
+
         public int IdFacure
         {
             get { return idFacure; }
