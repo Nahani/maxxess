@@ -21,6 +21,9 @@ namespace Maxxess
     public partial class FactureChequeWindow : Window
     {
         private Facture facture;
+        AccesBD_SQL access;
+        ChequeFidelite aChequeFidelite;
+
         public FactureChequeWindow()
         {
             InitializeComponent();
@@ -32,14 +35,14 @@ namespace Maxxess
             InitializeComponent();
             txt_Name.Text = facture.Client.Nom;
             lb_valeur.Content = facture.ChequeCadeau + "€";
+            access = AccesBD_SQL.Instance;
+
+            aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client,
+               DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE");
         }
 
         private void bt_generer_Click(object sender, RoutedEventArgs e)
         {
-            AccesBD_SQL access = AccesBD_SQL.Instance;
-            ChequeFidelite aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client, 
-                DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE");
-           
             access.insertChequeFidelite(aChequeFidelite);
             PDFUtils.storePDF(aChequeFidelite);
         }

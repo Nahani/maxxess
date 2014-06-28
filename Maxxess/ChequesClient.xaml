@@ -1,13 +1,13 @@
 ﻿<Window x:Class="Maxxess.ChequesClientView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cheques Fidélités" Height="300" Width="457.09"
+        Title="Cheques Fidélités" Height="300" Width="580"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
 
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2" HorizontalAlignment="Left" Width="447">
-        <ListView x:Name="listViewCheques" ItemsSource="{Binding ChequesCollection}" Height="271" VerticalAlignment="Top" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="listViewCheques" ItemsSource="{Binding ChequesCollection}" Height="271" VerticalAlignment="Top" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,0,-113,0">
             <ListView.View>
                 <GridView>
 
@@ -17,6 +17,8 @@
                                     DisplayMemberBinding="{Binding MontantEuros}"/>
                     <GridViewColumn Width="200" Header="Validité" 
                                     DisplayMemberBinding="{Binding Validite}"/>
+                    <GridViewColumn Width="100" Header="Bloqué" 
+                                    DisplayMemberBinding="{Binding isBloque}"/>
                 </GridView>
             </ListView.View>
         </ListView>

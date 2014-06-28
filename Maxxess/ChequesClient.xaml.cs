@@ -12,6 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Maxxess
 {
@@ -26,9 +29,16 @@ namespace Maxxess
         private List<ChequeFidelite> cheques;
         private ObservableCollection<ChequeFidelite> chequesCollection;
 
+        public List<ChequeFidelite> Cheques
+        {
+            get { return cheques; }
+            set { cheques = value; }
+        }
+
         public ObservableCollection<ChequeFidelite> ChequesCollection
         {
             get { return chequesCollection; }
+            set { chequesCollection = value; }
         }
         public ChequesClientView(Client client)
         {
@@ -52,7 +62,7 @@ namespace Maxxess
         {
             DependencyObject dep = (DependencyObject)e.OriginalSource;
 
-            while ((dep != null) && !(dep is ListViewItem))
+            while ((dep != null) && !(dep is System.Windows.Controls.ListViewItem))
             {
                 dep = VisualTreeHelper.GetParent(dep);
             }
@@ -61,9 +71,20 @@ namespace Maxxess
                 return;
 
             ChequeFidelite item = (ChequeFidelite)listViewCheques.ItemContainerGenerator.ItemFromContainer(dep);
-            
-            ChequeFideliteView window = new ChequeFideliteView(item);
-            window.Show();
+
+            if (item.Bloque)
+            {
+               System.Windows.Forms.MessageBox.Show("Ce chèque cadeau est actuellement bloqué. Vous ne pouvez ni le regénérer, ni le bloquer à nouveau.",
+                         "Chèque fidélité Maxxess",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Question,
+                         MessageBoxDefaultButton.Button2);
+            }
+            else
+            {
+                ChequeFideliteView window = new ChequeFideliteView(item,this);
+                window.Show();
+            }
         }
     }
 }

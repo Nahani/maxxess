@@ -14,6 +14,7 @@ namespace DB
         private DateTime dateDebutValidite;
         private DateTime dateFinValidite;
         private String magasin;
+        private Boolean bloque;
 
         public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
         {
@@ -24,9 +25,10 @@ namespace DB
             this.dateDebutValidite = dateDebutValidite;
             this.dateFinValidite = dateFinValidite;
             this.magasin = magasin;
+            this.bloque = false;
         }
 
-        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin)
+        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, Boolean bloque)
         {
             this.id = id;
             this.montant = montant;
@@ -35,6 +37,18 @@ namespace DB
             this.dateDebutValidite = dateDebutValidite;
             this.dateFinValidite = dateFinValidite;
             this.magasin = magasin;
+            this.bloque = bloque;
+        }
+
+        public String isBloque
+        {
+            get { return bloque ? "Oui" : "Non"; }
+        }
+
+        public Boolean Bloque
+        {
+            get { return bloque; }
+            set { bloque = value; }
         }
 
         public int ID

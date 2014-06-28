@@ -200,8 +200,8 @@ namespace DB
             if (reader.Read())
             {
                 Client associated_client = getClientById(reader.GetString(3));
-                targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client, 
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6));
+                targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client,
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7));
             }
             Connexion.close();
             return targeted_cheque;
@@ -214,7 +214,7 @@ namespace DB
             List<ChequeFidelite> result = new List<ChequeFidelite>();
             while (reader.Read())
                 result.Add(new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6)));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7)));
             Connexion.close();
             return result;
         }
@@ -235,6 +235,19 @@ namespace DB
                 }
 
             }
+
+            Connexion.close();
+            return result;
+        }
+
+        public bool bloquerChequeFidelite(ChequeFidelite cheque)
+        {
+            bool result = false;
+
+            SqlCommand req = new SqlCommand(
+           "UPDATE CHEQUE_FIDELITE SET BLOQUE = 1 WHERE ID = '" + cheque.ID + "'", Connexion.Connection);
+
+            result = Connexion.execute_Request(req);
 
             Connexion.close();
             return result;
@@ -265,7 +278,8 @@ namespace DB
                     result = reader.GetInt32(0);
                     cheque.ID = Convert.ToInt32(result);
                 }
-            
+
+            Connexion.close();
             return result;
         }
      
