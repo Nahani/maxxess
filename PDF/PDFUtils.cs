@@ -166,9 +166,14 @@ namespace PDF
 
             PdfDocumentSecurityLevel level = document.SecuritySettings.DocumentSecurityLevel;
 
+            string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),"Cheques/");
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
             string newFileName = "cheque_" + aChequeFidelite.ID + "_" + aChequeFidelite.DateDebutValidite.ToString("dd_mm_yyyy", francais) + ".pdf";
-            document.Save(Path.Combine("../../../../", "Cheques/", newFileName));
-            //Process.Start(Path.Combine("../../../", filename));
+            document.Save(Path.Combine(path, newFileName));
+            Process.Start(Path.Combine(path, newFileName));
         }
     }
 
