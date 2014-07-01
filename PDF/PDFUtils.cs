@@ -54,7 +54,7 @@ namespace PDF
 
             CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
-            float amount = 7;//(int)aChequeFidelite.Montant;
+            float amount = (int)aChequeFidelite.Montant;
             string civilite = aChequeFidelite.Client.Civilite;
             string nomcomplet = aChequeFidelite.Beneficiaire.Replace(",","");
             string prenom = nomcomplet.Split(new char[] {' '})[0];

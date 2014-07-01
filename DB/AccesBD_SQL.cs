@@ -199,7 +199,9 @@ namespace DB
             while (reader.Read())
             {
                 
-                    result.Add(new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3))));
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    result.Add(f);
                 
             }
                 
@@ -259,7 +261,16 @@ namespace DB
         public Boolean chequeFideliteAssocieExists(Facture aFacture)
         {
             Boolean result = false;
-            String req = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_"+ aFacture.IdFacure + "'";
+            String type;
+            if (aFacture.Type == TypePiece.Facture)
+            {
+                type = "f_";
+            }
+            else
+            {
+                type = "t_";
+            }
+            String req = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = '"+ type + aFacture.IdFacure + "'";
             SqlDataReader reader = Connexion.execute_Select(req);
             if (reader.Read())
             {
