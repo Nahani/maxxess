@@ -41,8 +41,18 @@ namespace Maxxess
             lb_valeur.Content = facture.ChequeCadeau + "€";
             access = AccesBD_SQL.Instance;
 
+            String type;
+            if (facture.Type == TypePiece.Facture)
+            {
+                type = "f_";
+            }
+            else
+            {
+                type = "t_";
+            }
+
             aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client,
-               DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE", "f_"+facture.IdFacure);
+               DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE", type +facture.IdFacure);
         }
 
         private void bt_generer_Click(object sender, RoutedEventArgs e)
