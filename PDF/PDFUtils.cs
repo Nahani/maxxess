@@ -54,7 +54,7 @@ namespace PDF
 
             CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
-            float amount = (int)aChequeFidelite.Montant;
+            float amount = (float)aChequeFidelite.Montant;
             string civilite = aChequeFidelite.Client.Civilite;
             string nomcomplet = aChequeFidelite.Beneficiaire.Replace(",","");
             string prenom = nomcomplet.Split(new char[] {' '})[0];
@@ -70,10 +70,18 @@ namespace PDF
             XFont small = new XFont("Times New Roman", 9);
             XFont big_date = new XFont("Times New Roman", 11, XFontStyle.Bold);
 
-            int amount_size_text = 55;
-            if (amount >= 100)
+            int amount_size_text = 45;
+            int amount_length = amount.ToString().Length;
+            switch (amount_length)
             {
-                amount_size_text = 45;
+                case 1: amount_size_text = 45; break;
+                case 2: amount_size_text = 45; break;
+                case 3: amount_size_text = 40; break;
+                case 4: amount_size_text = 35; break;
+                case 5: amount_size_text = 30; break;
+                case 6: amount_size_text = 25; break;
+                case 7: amount_size_text = 20; break;
+                default: amount_size_text = 30; break;
             }
 
             XFont big_amount = new XFont("Arial Black", amount_size_text, XFontStyle.Bold);
@@ -107,22 +115,29 @@ namespace PDF
             gfx.DrawString(magasin.ToUpperInvariant(),
               small, XBrushes.Red, new XRect(461, 53, 100, 0), XStringFormats.Center);
 
+            XRect rect = new XRect(445, 67, 105, 42);
+            XStringFormat format = new XStringFormat();
+            format.Alignment = XStringAlignment.Far;
+            format.LineAlignment = XLineAlignment.Center;
+
+            gfx.DrawString("-" + amount, big_amount, XBrushes.Black, rect, format);
+
             // Montant header
-            if (amount >= 100)
+            /*if (amount >= 100)
             {
                 gfx.DrawString("-" + amount,
-                  big_amount, XBrushes.Black, new XRect(445, 108, 100, 0));
+                  big_amount, XBrushes.Black, new XRect(425, 108, 15, 0));
             }
             else if (amount < 10)
             {
                 gfx.DrawString("-" + amount,
-                 big_amount, XBrushes.Black, new XRect(475, 110, 100, 0));
+                 big_amount, XBrushes.Black, new XRect(455, 110, 15, 0));
             }
             else
             {
                 gfx.DrawString("-" + amount,
-                 big_amount, XBrushes.Black, new XRect(455, 110, 100, 0));
-            }
+                 big_amount, XBrushes.Black, new XRect(435, 110, 15, 0));
+            }*/
 
             // Numéro de chèque
             gfx.DrawString(aChequeFidelite.ID.ToString(),
@@ -156,4 +171,5 @@ namespace PDF
             //Process.Start(Path.Combine("../../../", filename));
         }
     }
+
 }
