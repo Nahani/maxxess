@@ -32,7 +32,7 @@ namespace PDF
         {
 
             File.Copy(Path.Combine("../../", filename),
-             Path.Combine(Directory.GetCurrentDirectory(), filename), true);
+            Path.Combine(Directory.GetCurrentDirectory(), filename), true);
 
             try
             {
@@ -151,8 +151,9 @@ namespace PDF
 
             PdfDocumentSecurityLevel level = document.SecuritySettings.DocumentSecurityLevel;
 
-            document.Save(filename);
-            Process.Start(filename);
+            string newFileName = "cheque_" + aChequeFidelite.ID + "_" + aChequeFidelite.DateDebutValidite.ToString("dd_mm_yyyy", francais) + ".pdf";
+            document.Save(Path.Combine("../../../../", "Cheques/", newFileName));
+            //Process.Start(Path.Combine("../../../", filename));
         }
     }
 }
