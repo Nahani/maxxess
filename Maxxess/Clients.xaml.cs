@@ -121,5 +121,26 @@ namespace Maxxess
             this.Close();
             view.Show();
         }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            clientsCollection.Clear();
+            clients = App.access.getAllClients();
+            clients.Reverse();
+            foreach (Client c in clients)
+            {
+                clientsCollection.Add(c);
+            }
+        }
+
+        private void Image_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Hand;
+        }
+
+        private void Image_MouseLeave(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Arrow;
+        }
     }
 }

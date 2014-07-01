@@ -5,6 +5,9 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BitmapImage x:Key="refresh" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\Nolan\Documents\Visual Studio 2013\Projects\Maxxess\Maxxess\images\refresh.png"/>
+    </Window.Resources>
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2">
         <ListView x:Name="listViewClients" ItemsSource="{Binding ClientsCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="792" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
@@ -27,5 +30,6 @@
         <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1">
 
         </Button>
+        <Image HorizontalAlignment="Left" Height="23" Margin="765,29,0,0" VerticalAlignment="Top" Width="29" Source="{DynamicResource refresh}" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave"/>
     </Grid>
 </Window>

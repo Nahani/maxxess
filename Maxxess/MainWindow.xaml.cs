@@ -239,6 +239,45 @@ namespace Maxxess
             view.Show();
         }
 
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bt_FactureJour.Background != Brushes.LightGreen)
+            {
+                facturesCollection.Clear();
+                factures = App.access.getAllFactures();
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                foreach (Facture f in factures)
+                {
+                    facturesCollection.Add(f);
+                }
+            }
+            else
+            {
+                facturesCollection.Clear();
+                factures = App.access.getFacturesOfDay();
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                double totalJour = 0;
+                foreach (Facture f in factures)
+                {
+                    totalJour += f.Total;
+                    facturesCollection.Add(f);
+                }
+                lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
+            }
+        }
+
+        private void Image_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Hand;
+        }
+
+        private void Image_MouseLeave(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Arrow;
+        }
+
 
     }
 }

@@ -5,8 +5,11 @@
         Title="Maxxess - Factures" Height="586" Width="859"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BitmapImage x:Key="refresh" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\Nolan\Documents\Visual Studio 2013\Projects\Maxxess\Maxxess\images\refresh.png"/>
+    </Window.Resources>
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2">
-        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="839" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="853" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="160" Header="Nom" 
@@ -41,6 +44,7 @@
         <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False"/>
         <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False"/>
         <Button x:Name="bt_Clients" Content="Clients" HorizontalAlignment="Left" Margin="311,5,0,0" VerticalAlignment="Top" Width="75" Click="bt_Clients_Click"  Background="#FFDDF025"/>
+        <Image HorizontalAlignment="Left" Height="23" Margin="814,32,0,0" VerticalAlignment="Top" Width="29" Source="{DynamicResource refresh}" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave"/>
 
     </Grid>
 </Window>
