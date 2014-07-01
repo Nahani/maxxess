@@ -14,8 +14,10 @@ namespace PDF
     public class PDFUtils
     {
         private static XGraphics gfx;
-        private static string filename = "Maxxess.pdf";
+        //private static string filename = "Maxxess.pdf";
         private static PdfDocument document;
+
+        
 
         public static string UppercaseFirst(string s)
         {
@@ -31,23 +33,25 @@ namespace PDF
         public static void storePDF(ChequeFidelite aChequeFidelite)
         {
 
-            File.Copy(Path.Combine("../../", filename),
-            Path.Combine(Directory.GetCurrentDirectory(), filename), true);
+            //File.Copy(Path.Combine("../../", filename),
+            //Path.Combine(Directory.GetCurrentDirectory(), filename), true);
+
+            Stream stream = new MemoryStream(ResourcePDF.Maxxess);
 
             try
             {
-                document = PdfReader.Open(filename, "invalid password");
+                document = PdfReader.Open(stream);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
 
-            document = PdfReader.Open(filename, PdfDocumentOpenMode.Modify);
-            document = PdfReader.Open(filename, "user", PdfDocumentOpenMode.ReadOnly);
+            document = PdfReader.Open(stream);
+            document = PdfReader.Open(stream);
 
             bool hasOwnerAccess = document.SecuritySettings.HasOwnerPermissions;
-            document = PdfReader.Open(filename, "owner");
+            document = PdfReader.Open(stream);
             hasOwnerAccess = document.SecuritySettings.HasOwnerPermissions;
 
             gfx = XGraphics.FromPdfPage(document.Pages[0]);
