@@ -28,8 +28,16 @@ namespace Maxxess
         public MainWindow()
         {
             facturesCollection =  new ObservableCollection<Facture>();
-
-            factures = App.access.getAllFactures();
+            
+            try
+            {
+                factures = App.access.getAllFactures();
+            }
+            catch
+            {
+                factures = new List<Facture>();
+            }
+            
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)

@@ -57,7 +57,17 @@ namespace Maxxess
 
         private void bt_generer_Click(object sender, RoutedEventArgs e)
         {
-            access.insertChequeFidelite(aChequeFidelite);
+            try {
+                aChequeFidelite.ID = access.insertChequeFidelite(aChequeFidelite);
+            }
+            catch
+            {
+                System.Windows.Forms.MessageBox.Show("Erreur insere BDD", "Erreur",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button2);
+            }
+            
             PDFUtils.storePDF(aChequeFidelite);
 
             System.Windows.Forms.MessageBox.Show("Le chèque cadeau a été généré avec succès.",
