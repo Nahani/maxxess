@@ -58,17 +58,27 @@ namespace PDF
 
             CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
-            float amount = (float)aChequeFidelite.Montant;
+            float amount = (int)aChequeFidelite.Montant;
             string civilite = aChequeFidelite.Client.Civilite;
-            string nomcomplet = aChequeFidelite.Beneficiaire.Replace(",","");
-            string prenom = nomcomplet.Split(new char[] {' '})[0];
-            string nom = nomcomplet.Split(new char[] { ' ' })[1];
-            nomcomplet = civilite + prenom + " " + nom.ToUpper();
+            string nomcomplet = aChequeFidelite.Beneficiaire;
+            
             string compte = aChequeFidelite.Client.ID;
             //DateTime dateReception = aChequeFidelite.DateReception;
             DateTime dateDebut = aChequeFidelite.DateDebutValidite;
             DateTime dateFin = aChequeFidelite.DateFinValidite;
             string magasin = aChequeFidelite.Magasin;
+            /*
+            float amount = 1.0f;
+            string civilite = "civil";
+            string nomcomplet = "nomcomplet";
+            string prenom = "prenom";
+            string nom = "nom";
+            nomcomplet = civilite + prenom + " " + nom.ToUpper();
+            string compte = "compte";
+            //DateTime dateReception = aChequeFidelite.DateReception;
+            DateTime dateDebut = DateTime.Now;
+            DateTime dateFin = DateTime.Now;
+            string magasin = "magasin";*/
 
             XFont classical = new XFont("Times New Roman", 12);
             XFont small = new XFont("Times New Roman", 9);
@@ -144,7 +154,7 @@ namespace PDF
             }*/
 
             // Numéro de chèque
-            gfx.DrawString(aChequeFidelite.ID.ToString(),
+            gfx.DrawString("ID",
                  classical, XBrushes.Black, new XRect(475, 200, 100, 0));
          
 
