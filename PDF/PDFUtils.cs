@@ -58,7 +58,7 @@ namespace PDF
 
             CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
-            float amount = (int)aChequeFidelite.Montant;
+            float amount = (float)aChequeFidelite.Montant;
             string civilite = aChequeFidelite.Client.Civilite;
             string nomcomplet = aChequeFidelite.Beneficiaire;
             
@@ -102,7 +102,7 @@ namespace PDF
             XFont big_amount_2 = new XFont("Arial Black", amount_size_text / 2.7, XFontStyle.Bold);
 
             // Montant en toutes lettres header
-            gfx.DrawString(CurrencyConverter.convert(amount),
+            gfx.DrawString(CurrencyConverter.convertNumber((int)Math.Floor(amount), (int)Math.Round((amount - (int)amount)*100.0)),
               classical, XBrushes.Red, 123, 49);
 
             // Bénéficiaire header

@@ -6,7 +6,18 @@ namespace PDF
 {
     abstract class CurrencyConverter
     {
-        public static string convert(float chiffre)
+        public static string convertNumber(int chiffre, int aDec)
+        {
+            string firstResult = convert(chiffre) + "euros ";
+            string secondResult = "";
+            if (aDec != 0)
+            {
+                secondResult = "et " + convert(aDec).ToLower() + "centimes";
+            }
+            return firstResult + secondResult;
+        }
+
+        public static string convert(int chiffre)
         {
             int centaine, dizaine, unite, reste, y;
             bool dix = false;
@@ -162,7 +173,7 @@ namespace PDF
             } // end for
             if (lettre.Length == 0) lettre += "zéro ";
 
-            return PDFUtils.UppercaseFirst(lettre + "euros");
+            return PDFUtils.UppercaseFirst(lettre);
         }
     }
 }
