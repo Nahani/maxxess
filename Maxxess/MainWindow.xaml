@@ -10,6 +10,7 @@
         <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="853" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
+                    
                     <GridViewColumn Width="160" Header="Nom" 
                                     DisplayMemberBinding="{Binding Client.Nom}"/>
                     <GridViewColumn Width="200" Header="Adresse" 
@@ -42,7 +43,8 @@
         <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False"/>
         <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False"/>
         <Button x:Name="bt_Clients" Content="Clients" HorizontalAlignment="Left" Margin="311,5,0,0" VerticalAlignment="Top" Width="75" Click="bt_Clients_Click"  Background="#FFDDF025"/>
-        
+
+        <Image x:Name="img_refresh" HorizontalAlignment="Left" Height="23" Margin="814,32,0,0" VerticalAlignment="Top" Width="29" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Source="{StaticResource refresh}"/>
 
     </Grid>
 </Window>

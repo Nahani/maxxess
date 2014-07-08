@@ -44,6 +44,7 @@ namespace Maxxess
             {
                 facturesCollection.Add(f);
             }
+            
             InitializeComponent();
             Bt_Nom.Background = Brushes.Red;
             searchBy = SearchBy.Nom;

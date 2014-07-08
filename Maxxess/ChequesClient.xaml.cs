@@ -43,7 +43,21 @@ namespace Maxxess
         public ChequesClientView(Client client)
         {
             this.Client = client;
-            cheques = App.access.getChequesFideliteByClient(Client);
+            try
+            {
+                cheques = App.access.getChequesFideliteByClient(Client);
+            }
+            catch(Exception e)
+            {
+                cheques = new List<ChequeFidelite>();
+                System.Windows.Forms.MessageBox.Show(e.Message,
+                         "Chèque fidélité Maxxess",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Question,
+                         MessageBoxDefaultButton.Button2);
+
+            }
+            
             chequesCollection = new ObservableCollection<ChequeFidelite>();
             foreach (ChequeFidelite c in cheques)
             {
