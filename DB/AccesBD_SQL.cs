@@ -97,11 +97,21 @@ namespace DB
             foreach(Client client in clients ) 
             { 
                 String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1;";
-                SqlDataReader reader = Connexion.execute_Select(req);            
-              
+                SqlDataReader reader = Connexion.execute_Select(req);
+                SqlDataReader reader2;
+
                 while (reader.Read())
-                {                
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client));
+                {
+                    req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
+                    reader2 = Connexion.execute_Select(req);
+                    if (reader2.Read())
+                    {
+                        result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, true));
+                    }
+                    else
+                    {
+                        result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, false));
+                    }
                 }
 
                 Connexion.close();
@@ -119,8 +129,18 @@ namespace DB
 
             while (reader.Read())
             {
-                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id)));
+                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                if (reader2.Read())
+                {
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), true));
+                }
+                else
+                {
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), false));
+                }
             }
+
 
             Connexion.close();
             
@@ -139,9 +159,16 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-
-                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5))));
-                
+                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                if (reader2.Read())
+                { 
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true));
+                }
+                else
+                {
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false));
+                }
 
             }
 
@@ -160,9 +187,17 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
+                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                if (reader2.Read())
+                { 
 
-                result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5))));
-
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true));
+                }
+                else
+                {
+                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false));
+                }
 
             }
 
@@ -178,13 +213,19 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-                req = "SELECT * FROM TIERS WHERE T_AUXILIAIRE='" + reader.GetString(5) + "'";
+                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
                     Facture f =   new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), 
-                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1),
-                            reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)));
+                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true);
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    result.Add(f);
+                }
+                else
+                {
+                     Facture f =   new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), 
+                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false);
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                     result.Add(f);
                 }
@@ -199,7 +240,7 @@ namespace DB
             while (reader.Read())
             {
                 
-                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)));
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), true);
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                     result.Add(f);
                 
@@ -249,7 +290,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)));
+                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)), true);
                 }
 
             }
@@ -298,8 +339,8 @@ namespace DB
             int result = -1;
            
                 SqlCommand req = new SqlCommand(
-               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference) " +
-               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference)", Connexion.Connection);
+               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference, bloque) " +
+               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference, @bloque)", Connexion.Connection);
                
                 req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
                 req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
@@ -308,6 +349,7 @@ namespace DB
                 req.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
                 req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
                 req.Parameters.Add("@reference", SqlDbType.NChar, cheque.Reference.Length).Value = cheque.Reference;
+                req.Parameters.Add("@bloque", SqlDbType.Bit).Value = false;
 
                 Connexion.execute_Request(req);
 

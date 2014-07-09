@@ -17,9 +17,10 @@ namespace DB
         private Boolean chequeAssocieGenere;
         private String modeReglement;
         private TypePiece type;
+        private bool remise;
 
         
-        public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, TypePiece type, Client client)
+        public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, TypePiece type, Client client, bool remise)
         {
             this.IdFacure = idFacture;
             this.Libelle = libelle;
@@ -28,8 +29,10 @@ namespace DB
             this.Date = date;
             this.modeReglement = modeReglement;
             this.type = type;
+            
             //Calculer le montant du chèque cadeau
-            this.ChequeCadeau = total * 0.04;
+            if(remise)
+                this.ChequeCadeau = Math.Round(total * 0.04, 2);
         }
 
         public String isChequeAssocieGenere
@@ -91,7 +94,7 @@ namespace DB
 
         public String ChequeCadeauEuros
         {
-            get { return chequeCadeau + " €"; }
+            get { return (int)chequeCadeau + " €"; }
         }
 
         public String ModeReglement

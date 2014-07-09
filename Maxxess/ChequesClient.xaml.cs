@@ -50,7 +50,7 @@ namespace Maxxess
             catch(Exception e)
             {
                 cheques = new List<ChequeFidelite>();
-                System.Windows.Forms.MessageBox.Show(e.Message,
+                System.Windows.Forms.MessageBox.Show(client.ID + e.Message,
                          "Chèque fidélité Maxxess",
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Question,
