@@ -98,26 +98,67 @@ namespace DB
             { 
                 String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1;";
                 SqlDataReader reader = Connexion.execute_Select(req);
-                SqlDataReader reader2;
+                
 
                 while (reader.Read())
                 {
-                    req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
-                    reader2 = Connexion.execute_Select(req);
-                    if (reader2.Read())
-                    {
-                        result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, true));
-                    }
-                    else
-                    {
-                        result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, false));
-                    }
+
+                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, Convert.ToInt32(reader.GetString(7))));
+                    
+                }
+
+                //Obtenir les tickets
+                req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_AUXILIAIRE = '" + client.ID + "';";
+                reader = Connexion.execute_Select(req);
+
+
+                while (reader.Read())
+                {
+
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    result.Add(f);
+
                 }
 
                 Connexion.close();
             }
             return result;
 
+        }
+
+        public Double getRemiseFacture(int idFacture)
+        {
+            Double res=0;
+            String req = "SELECT * FROM LIGNES WHERE L_NUMEROPIECE =" + idFacture + " and L_TYPEPIECE = 'FAC' and L_TAUXREMISE=5;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+                
+                    res += Convert.ToDouble((Decimal)reader.GetSqlDecimal(6));
+                
+            }
+            Connexion.close();
+            return res;
+        }
+
+        public Double getRemiseTicket(int idFacture)
+        {
+            Double res = 0;
+            String req = "SELECT * FROM LIGNES WHERE L_NUMEROPIECE =" + idFacture + " and L_TYPEPIECE = 'VTC' and L_TAUXREMISE=5;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+                
+               res += Convert.ToDouble((Decimal)reader.GetSqlDecimal(6));
+                
+            }
+            Connexion.close();
+            return res;
         }
 
         public List<Facture> getFactureByNumClient(String id)
@@ -129,16 +170,25 @@ namespace DB
 
             while (reader.Read())
             {
-                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
-                SqlDataReader reader2 = Connexion.execute_Select(req);
-                if (reader2.Read())
-                {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), true));
-                }
-                else
-                {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), false));
-                }
+
+
+                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+                
+                
+            }
+
+            //Obtenir les tickets
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_AUXILIAIRE = '" + id + "';";
+            reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+
+                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                result.Add(f);
+
             }
 
 
@@ -159,16 +209,26 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
-                SqlDataReader reader2 = Connexion.execute_Select(req);
-                if (reader2.Read())
-                { 
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true));
-                }
-                else
-                {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false));
-                }
+
+
+                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+                
+                
+
+            }
+
+            
+            //Obtenir les tickets
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
+            reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+
+                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                result.Add(f);
 
             }
 
@@ -187,17 +247,24 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
-                SqlDataReader reader2 = Connexion.execute_Select(req);
-                if (reader2.Read())
-                { 
 
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true));
-                }
-                else
-                {
-                    result.Add(new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false));
-                }
+
+                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+                
+                
+            }
+
+            //Obtenir les tickets
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '"+ mode + "' ;";
+            reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+
+                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                result.Add(f);
 
             }
 
@@ -209,26 +276,16 @@ namespace DB
         {
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1;";
             SqlDataReader reader = Connexion.execute_Select(req);
-            SqlDataReader reader2;
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-                req = "SELECT * FROM ECRITURE WHERE E_NUMEROPIECE=" + reader.GetInt32(2) + " and E_NUMLIGNE=4";
-                reader2 = Connexion.execute_Select(req);
-                if (reader2.Read())
-                {
-                    Facture f =   new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), 
-                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), true);
+                
+                    Facture f =   new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
+                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                     result.Add(f);
-                }
-                else
-                {
-                     Facture f =   new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), 
-                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), false);
-                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                    result.Add(f);
-                }
+                
+               
                 
             }
 
@@ -239,10 +296,10 @@ namespace DB
             
             while (reader.Read())
             {
-                
-                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), true);
-                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                    result.Add(f);
+
+                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                result.Add(f);
                 
             }
                 
@@ -290,7 +347,7 @@ namespace DB
                 reader2 = Connexion.execute_Select(req);
                 if (reader2.Read())
                 {
-                    result = new Facture(reader.GetInt32(2), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)), true);
+                    result = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, new Client(reader2.GetString(0), reader2.GetString(2), reader2.GetString(1), reader2.GetString(3), reader2.GetString(4), reader2.GetString(6), reader2.GetString(7), reader2.GetString(86)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                 }
 
             }
