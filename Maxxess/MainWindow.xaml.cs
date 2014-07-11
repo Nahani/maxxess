@@ -126,7 +126,15 @@ namespace Maxxess
 
             Facture item = (Facture)listViewFactures.ItemContainerGenerator.ItemFromContainer(dep);
 
-            if (item.Avoir)
+            if (item.ChequeCadeau <= 0.0)
+            {
+                System.Windows.Forms.MessageBox.Show("Le chèque cadeau ne peut être généré sans crédit.",
+                      "Chèque fidélité Maxxess",
+                      System.Windows.Forms.MessageBoxButtons.OK,
+                      System.Windows.Forms.MessageBoxIcon.Question,
+                      System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            }
+            else if (item.Avoir)
             {
                 System.Windows.Forms.MessageBox.Show("Un avoir a été généré pour cette facture. Le chèque-cadeau ne peut alors été généré.",
                        "Chèque fidélité Maxxess",
