@@ -15,6 +15,7 @@ namespace DB
         private DateTime dateFinValidite;
         private String magasin;
         private Boolean bloque;
+        private Boolean avoir;
         private String reference;
 
         public ChequeFidelite(Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, String reference)
@@ -30,7 +31,8 @@ namespace DB
             this.bloque = false;
         }
 
-        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite, DateTime dateFinValidite, String magasin, Boolean bloque, String reference)
+        public ChequeFidelite(int id, Double montant, String beneficiaire, Client client, DateTime dateDebutValidite,
+            DateTime dateFinValidite, String magasin, Boolean bloque, String reference,  Boolean avoir)
         {
             this.id = id;
             this.montant = montant;
@@ -41,6 +43,7 @@ namespace DB
             this.magasin = magasin;
             this.reference = reference;
             this.bloque = bloque;
+            this.avoir = avoir;
         }
 
         public String Type
@@ -57,6 +60,17 @@ namespace DB
         {
             get { return bloque; }
             set { bloque = value; }
+        }
+
+        public String hasAvoir
+        {
+            get { return avoir ? "Oui" : "Non"; }
+        }
+
+        public Boolean Avoir
+        {
+            get { return avoir; }
+            set { avoir = value; }
         }
 
         public int ID

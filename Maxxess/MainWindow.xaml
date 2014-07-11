@@ -2,12 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Maxxess - Factures" Height="586" Width="911"
+        Title="Maxxess - Factures" Height="586" Width="975"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
    
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2">
-        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="889" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="941" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     
@@ -29,6 +29,8 @@
                                     DisplayMemberBinding="{Binding isChequeAssocieGenere}"/>
                     <GridViewColumn Width="50" Header="Bloqué"
                                     DisplayMemberBinding="{Binding isChequeAssocieBloque}"/>
+                    <GridViewColumn Width="50" Header="Avoir"
+                                    DisplayMemberBinding="{Binding HasAvoir}"/>
                 </GridView>
             </ListView.View>
         </ListView>

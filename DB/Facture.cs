@@ -16,6 +16,7 @@ namespace DB
         private DateTime date;
         private Boolean chequeAssocieGenere;
         private Boolean chequeAssocieBloque;
+        private Boolean hasAvoir;
         private String modeReglement;
         private TypePiece type;
         private Double totalRemise;
@@ -46,6 +47,17 @@ namespace DB
         {
             get { return chequeAssocieGenere; }
             set { chequeAssocieGenere = value; }
+        }
+
+        public String HasAvoir
+        {
+            get { return hasAvoir ? "Oui" : "Non"; }
+        }
+
+        public Boolean Avoir
+        {
+            get { return hasAvoir; }
+            set { hasAvoir = value; }
         }
 
         public String isChequeAssocieBloque

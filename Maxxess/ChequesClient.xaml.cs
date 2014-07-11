@@ -86,17 +86,25 @@ namespace Maxxess
 
             ChequeFidelite item = (ChequeFidelite)listViewCheques.ItemContainerGenerator.ItemFromContainer(dep);
 
-            if (item.Bloque)
+            if (item.Avoir)
             {
-               System.Windows.Forms.MessageBox.Show("Ce chèque cadeau est actuellement bloqué. Vous ne pouvez ni le regénérer, ni le bloquer à nouveau.",
-                         "Chèque fidélité Maxxess",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Question,
-                         MessageBoxDefaultButton.Button2);
+                System.Windows.Forms.MessageBox.Show("La facture associé au chèque cadeau courant bénéficie d'un avoir et ne peut donc être généré.",
+                          "Chèque fidélité Maxxess",
+                          MessageBoxButtons.OK,
+                          MessageBoxIcon.Question,
+                          MessageBoxDefaultButton.Button2);
+            }
+            else if (item.Bloque)
+            {
+                System.Windows.Forms.MessageBox.Show("Ce chèque cadeau est actuellement bloqué. Vous ne pouvez ni le regénérer, ni le bloquer à nouveau.",
+                          "Chèque fidélité Maxxess",
+                          MessageBoxButtons.OK,
+                          MessageBoxIcon.Question,
+                          MessageBoxDefaultButton.Button2);
             }
             else
             {
-                ChequeFideliteView window = new ChequeFideliteView(item,this);
+                ChequeFideliteView window = new ChequeFideliteView(item, this);
                 window.Show();
             }
         }

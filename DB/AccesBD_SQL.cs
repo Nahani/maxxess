@@ -122,6 +122,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
+                    f.Avoir = discardChequesIfAvoir(f);
                     result.Add(f);
 
                 }
@@ -196,6 +197,7 @@ namespace DB
                 {
                     f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                 }
+                f.Avoir = discardChequesIfAvoir(f);
                 result.Add(f);
 
             }
@@ -241,6 +243,7 @@ namespace DB
                 {
                     f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                 }
+                f.Avoir = discardChequesIfAvoir(f);
                 result.Add(f);
 
             }
@@ -281,6 +284,7 @@ namespace DB
                 {
                     f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                 }
+                f.Avoir = discardChequesIfAvoir(f);
                 result.Add(f);
 
             }
@@ -289,9 +293,27 @@ namespace DB
             return result;
         }
 
+        public Boolean discardChequesIfAvoir(Facture f)
+        {
+            Boolean result = false;
+            String req = "SELECT COUNT(*) FROM ECRITURE WHERE E_JOURNAL = 'VEN' AND E_REFERENCE = '" + f.IdFacure + "' AND E_LIBELLE LIKE '%AVC%' AND E_CREDIT <> 0;" ;
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if (reader.Read())
+            {
+                result = (reader.GetInt32(0) == 0 ? false : true);
+            }
+            if (result)
+            {
+                req = "UPDATE CHEQUE_FIDELITE SET AVOIR = 1 WHERE REFERENCE = 'f_" + f.IdFacure + "';";
+            }
+            Connexion.execute_Request(req);
+            Connexion.close();
+            return result;
+        }
+
         public List<Facture> getAllFactures()
         {
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1;";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE NOT LIKE '%AVC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
             List<Facture> result = new List<Facture>();
             while (reader.Read())
@@ -304,10 +326,8 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
+                    f.Avoir = discardChequesIfAvoir(f);
                     result.Add(f);
-                
-               
-                
             }
 
             //Obtenir les tickets
@@ -324,6 +344,7 @@ namespace DB
                 {
                     f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                 }
+                f.Avoir = discardChequesIfAvoir(f);
                 result.Add(f);
                 
             }
@@ -342,7 +363,7 @@ namespace DB
             {
                 Client associated_client = getClientById(reader.GetString(3));
                 targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9));
             }
             Connexion.close();
             return targeted_cheque;
@@ -355,7 +376,7 @@ namespace DB
             List<ChequeFidelite> result = new List<ChequeFidelite>();
             while (reader.Read())
                 result.Add(new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8)));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9)));
             Connexion.close();
             return result;
         }
@@ -420,6 +441,7 @@ namespace DB
             {
                 result = (reader.GetInt32(0) == 0 ? false : true);
             }
+            Connexion.close();
             return result;
         }
 

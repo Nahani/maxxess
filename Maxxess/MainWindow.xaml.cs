@@ -121,9 +121,16 @@ namespace Maxxess
 
             Facture item = (Facture)listViewFactures.ItemContainerGenerator.ItemFromContainer(dep);
 
-            if (item.ChequeAssocieGenere)
+            if (item.Avoir)
             {
-                System.Windows.Forms.MessageBox.Show("Le chèque cadeau a déjà été généré est actuellement bloqué",
+                System.Windows.Forms.MessageBox.Show("Un avoir a été généré pour cette facture. Le chèque-cadeau ne peut alors été généré.",
+                       "Chèque fidélité Maxxess",
+                       System.Windows.Forms.MessageBoxButtons.OK,
+                       System.Windows.Forms.MessageBoxIcon.Question,
+                       System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            } else if (item.ChequeAssocieBloque)
+            {
+                System.Windows.Forms.MessageBox.Show("Le chèque cadeau est actuellement bloqué",
                        "Chèque fidélité Maxxess",
                        System.Windows.Forms.MessageBoxButtons.OK,
                        System.Windows.Forms.MessageBoxIcon.Question,
