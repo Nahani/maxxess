@@ -28,7 +28,7 @@ namespace Maxxess
         public MainWindow()
         {
             facturesCollection =  new ObservableCollection<Facture>();
-            
+           
             try
             {
                 factures = App.access.getAllFactures();
@@ -122,6 +122,13 @@ namespace Maxxess
             Facture item = (Facture)listViewFactures.ItemContainerGenerator.ItemFromContainer(dep);
 
             if (item.ChequeAssocieGenere)
+            {
+                System.Windows.Forms.MessageBox.Show("Le chèque cadeau a déjà été généré est actuellement bloqué",
+                       "Chèque fidélité Maxxess",
+                       System.Windows.Forms.MessageBoxButtons.OK,
+                       System.Windows.Forms.MessageBoxIcon.Question,
+                       System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            } else if (item.ChequeAssocieGenere)
             {
                 System.Windows.Forms.MessageBox.Show("Le chèque cadeau a déjà été généré.",
                        "Chèque fidélité Maxxess",

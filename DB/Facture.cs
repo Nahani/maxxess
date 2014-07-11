@@ -15,6 +15,7 @@ namespace DB
         private double chequeCadeau;
         private DateTime date;
         private Boolean chequeAssocieGenere;
+        private Boolean chequeAssocieBloque;
         private String modeReglement;
         private TypePiece type;
         private Double totalRemise;
@@ -45,6 +46,21 @@ namespace DB
         {
             get { return chequeAssocieGenere; }
             set { chequeAssocieGenere = value; }
+        }
+
+        public String isChequeAssocieBloque
+        {
+            get {
+                if (!chequeAssocieGenere)
+                    return " - ";
+                else return chequeAssocieBloque ? "Oui" : "Non";
+            }
+        }
+
+        public Boolean ChequeAssocieBloque
+        {
+            get { return chequeAssocieBloque; }
+            set { chequeAssocieBloque = value; }
         }
 
         public int IdFacure

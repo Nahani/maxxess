@@ -117,6 +117,11 @@ namespace DB
 
                     Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
                     result.Add(f);
 
                 }
@@ -187,6 +192,10 @@ namespace DB
 
                 Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                 f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                if (f.ChequeAssocieGenere)
+                {
+                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                }
                 result.Add(f);
 
             }
@@ -228,6 +237,10 @@ namespace DB
 
                 Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                 f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                if (f.ChequeAssocieGenere)
+                {
+                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                }
                 result.Add(f);
 
             }
@@ -264,6 +277,10 @@ namespace DB
 
                 Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                 f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                if (f.ChequeAssocieGenere)
+                {
+                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                }
                 result.Add(f);
 
             }
@@ -283,6 +300,10 @@ namespace DB
                     Facture f =   new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
                         reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
                     result.Add(f);
                 
                
@@ -299,6 +320,10 @@ namespace DB
 
                 Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                 f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                if (f.ChequeAssocieGenere)
+                {
+                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                }
                 result.Add(f);
                 
             }
@@ -376,6 +401,28 @@ namespace DB
             }
             return result;
         }
+
+        public Boolean chequeFideliteAssocieIsBloque(Facture aFacture)
+        {
+            Boolean result = false;
+            String type;
+            if (aFacture.Type == TypePiece.Facture)
+            {
+                type = "f_";
+            }
+            else
+            {
+                type = "t_";
+            }
+            String req = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = '" + type + aFacture.IdFacure + "' AND BLOQUE = 1";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if (reader.Read())
+            {
+                result = (reader.GetInt32(0) == 0 ? false : true);
+            }
+            return result;
+        }
+
 
         public bool bloquerChequeFidelite(ChequeFidelite cheque)
         {
