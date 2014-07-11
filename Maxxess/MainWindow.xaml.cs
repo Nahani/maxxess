@@ -33,9 +33,14 @@ namespace Maxxess
             {
                 factures = App.access.getAllFactures();
             }
-            catch
+            catch(Exception e)
             {
                 factures = new List<Facture>();
+                System.Windows.Forms.MessageBox.Show(e.Message,
+                       "Chèque fidélité Maxxess",
+                       System.Windows.Forms.MessageBoxButtons.OK,
+                       System.Windows.Forms.MessageBoxIcon.Question,
+                       System.Windows.Forms.MessageBoxDefaultButton.Button2);
             }
             
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));

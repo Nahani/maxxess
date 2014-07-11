@@ -38,7 +38,7 @@ namespace Maxxess
             this.facture = facture;
             InitializeComponent();
             txt_Name.Text = facture.Client.Nom;
-            lb_valeur.Content = facture.ChequeCadeau + "€";
+            lb_valeur.Content = String.Format("{0:0.00}", facture.ChequeCadeau) + "€";
             access = AccesBD_SQL.Instance;
 
             String type;

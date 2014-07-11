@@ -123,7 +123,7 @@ namespace DB
 
         public String ChequeCadeauEuros
         {
-            get { return (int)chequeCadeau + " €"; }
+            get { return String.Format("{0:0.00}",chequeCadeau) + " €"; }
         }
 
         public String ModeReglement
