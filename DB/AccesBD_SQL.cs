@@ -102,9 +102,14 @@ namespace DB
 
                 while (reader.Read())
                 {
-
-                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, client, Convert.ToInt32(reader.GetString(7))));
-                    
+                    req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                    SqlDataReader reader2 = Connexion.execute_Select(req);
+                    DateTime date;
+                    if (reader2.Read())
+                    {
+                        date = reader2.GetDateTime(0);
+                        result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, client, Convert.ToInt32(reader.GetString(7))));
+                    }
                 }
 
                 //Obtenir les tickets
@@ -114,16 +119,22 @@ namespace DB
 
                 while (reader.Read())
                 {
-
-                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
-                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-
-                    if (f.ChequeAssocieGenere)
+                    req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                    SqlDataReader reader2 = Connexion.execute_Select(req);
+                    DateTime date;
+                    if (reader2.Read())
                     {
-                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                        date = reader2.GetDateTime(0);
+                        Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                        f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+
+                        if (f.ChequeAssocieGenere)
+                        {
+                            f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                        }
+                        f.Avoir = discardChequesIfAvoir(f);
+                        result.Add(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
-                    result.Add(f);
 
                 }
 
@@ -176,10 +187,14 @@ namespace DB
 
             while (reader.Read())
             {
-
-
-                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(id), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
-                
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(id), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+                }
                 
             }
 
@@ -190,15 +205,21 @@ namespace DB
 
             while (reader.Read())
             {
-
-                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
-                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                if (f.ChequeAssocieGenere)
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
                 {
-                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
+                    f.Avoir = discardChequesIfAvoir(f);
+                    result.Add(f);
                 }
-                f.Avoir = discardChequesIfAvoir(f);
-                result.Add(f);
 
             }
 
@@ -220,11 +241,16 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
 
+                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
 
-                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
-                
-                
+                }
 
             }
 
@@ -236,15 +262,21 @@ namespace DB
 
             while (reader.Read())
             {
-
-                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
-                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                if (f.ChequeAssocieGenere)
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
                 {
-                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
+                    f.Avoir = discardChequesIfAvoir(f);
+                    result.Add(f);
                 }
-                f.Avoir = discardChequesIfAvoir(f);
-                result.Add(f);
 
             }
 
@@ -264,9 +296,14 @@ namespace DB
             while (reader.Read())
             {
 
-
-                result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
-                
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+                }                
                 
             }
 
@@ -277,15 +314,21 @@ namespace DB
 
             while (reader.Read())
             {
-
-                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
-                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                if (f.ChequeAssocieGenere)
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
                 {
-                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
+                    f.Avoir = discardChequesIfAvoir(f);
+                    result.Add(f);
                 }
-                f.Avoir = discardChequesIfAvoir(f);
-                result.Add(f);
 
             }
 
@@ -318,9 +361,14 @@ namespace DB
             List<Facture> result = new List<Facture>();
             while (reader.Read())
             {
-                
-                    Facture f =   new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
-                        reader.GetDateTime(1), reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                     if (f.ChequeAssocieGenere)
                     {
@@ -328,6 +376,9 @@ namespace DB
                     }
                     f.Avoir = discardChequesIfAvoir(f);
                     result.Add(f);
+                }
+                
+                
             }
 
             //Obtenir les tickets
@@ -337,15 +388,21 @@ namespace DB
             
             while (reader.Read())
             {
-
-                Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(1), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
-                f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                if (f.ChequeAssocieGenere)
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
                 {
-                    f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
-                }
-                f.Avoir = discardChequesIfAvoir(f);
-                result.Add(f);
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
+                    f.Avoir = discardChequesIfAvoir(f);
+                    result.Add(f);
+                }                              
                 
             }
                 
