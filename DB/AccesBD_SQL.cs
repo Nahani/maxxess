@@ -144,6 +144,58 @@ namespace DB
 
         }
 
+        public List<Facture> getFactureByDate(DateTime start, DateTime end)
+        {
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1;";
+            SqlDataReader reader = Connexion.execute_Select(req);
+
+            List<Facture> result = new List<Facture>();
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+
+                    result.Add(new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7)))));
+
+                }
+
+            }
+
+
+            //Obtenir les tickets
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
+            reader = Connexion.execute_Select(req);
+
+
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + reader.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), date, reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                    }
+                    f.Avoir = discardChequesIfAvoir(f);
+                    result.Add(f);
+                }
+
+            }
+
+            Connexion.close();
+            return result;
+
+        }
+
         public Double getRemiseFacture(int idFacture)
         {
             Double res=0;
@@ -522,8 +574,8 @@ namespace DB
             int result = -1;
            
                 SqlCommand req = new SqlCommand(
-               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference, bloque) " +
-               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference, @bloque)", Connexion.Connection);
+               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference, bloque, avoir) " +
+               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference, @bloque, @avoir)", Connexion.Connection);
                
                 req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
                 req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
@@ -533,6 +585,7 @@ namespace DB
                 req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
                 req.Parameters.Add("@reference", SqlDbType.NChar, cheque.Reference.Length).Value = cheque.Reference;
                 req.Parameters.Add("@bloque", SqlDbType.Bit).Value = false;
+                req.Parameters.Add("@avoir", SqlDbType.Bit).Value = false;
 
                 Connexion.execute_Request(req);
 

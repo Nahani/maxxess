@@ -181,6 +181,12 @@ namespace Maxxess
             bt_CB.Visibility = Visibility.Visible; 
             bt_Cheque.IsEnabled = true;
             bt_Cheque.Visibility = Visibility.Visible;
+            date_picker_start.Visibility = Visibility.Hidden;
+            date_picker_start.IsEnabled = false;
+            date_picker_end.Visibility = Visibility.Hidden;
+            date_picker_end.IsEnabled = false;
+            bt_filtrer_date.Visibility = Visibility.Hidden;
+            bt_filtrer_date.IsEnabled = false;
 
             BrushConverter bc = new BrushConverter();
             bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
@@ -206,6 +212,12 @@ namespace Maxxess
             bt_CB.Visibility = Visibility.Hidden;
             bt_Cheque.IsEnabled = false;
             bt_Cheque.Visibility = Visibility.Hidden;
+            date_picker_start.Visibility = Visibility.Visible;
+            date_picker_start.IsEnabled = true;
+            date_picker_end.Visibility = Visibility.Visible;
+            date_picker_end.IsEnabled = true;
+            bt_filtrer_date.Visibility = Visibility.Visible;
+            bt_filtrer_date.IsEnabled = true;
 
             BrushConverter bc = new BrushConverter();
             bt_AllFactures.Background = Brushes.LightGreen;
@@ -312,6 +324,38 @@ namespace Maxxess
         private void Image_MouseLeave(object sender, MouseEventArgs e)
         {
             this.Cursor = Cursors.Arrow;
+        }
+
+        private void bt_filtrer_date_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime? start = date_picker_start.SelectedDate;
+            DateTime? end = date_picker_end.SelectedDate;
+            if (start != null && end != null)
+            {
+                try
+                {
+                    factures = App.access.getFactureByDate(start.Value, end.Value);
+                }
+                catch (Exception ex)
+                {
+                    factures = new List<Facture>();
+                    System.Windows.Forms.MessageBox.Show(ex.Message,
+                           "Chèque fidélité Maxxess",
+                           System.Windows.Forms.MessageBoxButtons.OK,
+                           System.Windows.Forms.MessageBoxIcon.Question,
+                           System.Windows.Forms.MessageBoxDefaultButton.Button2);
+                }
+
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                facturesCollection.Clear();
+                foreach (Facture f in factures)
+                {
+                    facturesCollection.Add(f);
+                }
+            }
+            
+           
         }
 
 
