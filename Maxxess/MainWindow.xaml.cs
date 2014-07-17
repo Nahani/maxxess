@@ -93,7 +93,30 @@ namespace Maxxess
                     
                     case SearchBy.Nom:
                         facturesCollection.Clear();
-                        factures = App.access.getFactureByName(txt_search.Text);
+                        DateTime? start = date_picker_start.SelectedDate;
+                        DateTime? end = date_picker_end.SelectedDate;
+                        if (start != null && end != null)
+                        {
+                            try
+                            {
+                                factures = App.access.getFactureByDateAndClient(txt_search.Text, start.Value, end.Value);
+                            }
+                            catch (Exception ex)
+                            {
+                                factures = new List<Facture>();
+                                System.Windows.Forms.MessageBox.Show(ex.Message,
+                                       "Chèque fidélité Maxxess",
+                                       System.Windows.Forms.MessageBoxButtons.OK,
+                                       System.Windows.Forms.MessageBoxIcon.Question,
+                                       System.Windows.Forms.MessageBoxDefaultButton.Button2);
+                            }
+                        }
+                        else
+                        {
+                            factures = App.access.getFactureByName(txt_search.Text);
+                        }
+                        factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                        factures.Reverse();
                         foreach (Facture f in factures)
                         {
                             facturesCollection.Add(f);
