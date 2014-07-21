@@ -35,7 +35,7 @@ namespace DB
             
             //Calculer le montant du chèque cadeau
 
-            this.ChequeCadeau = Math.Truncate(totalRemise * 0.05 * 10)/10;
+            this.ChequeCadeau = (double)Math.Floor(0.05 * totalRemise * 10.0) / 10.0;
         }
 
         public String isChequeAssocieGenere

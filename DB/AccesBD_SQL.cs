@@ -95,8 +95,8 @@ namespace DB
             List<Facture> result = new List<Facture>();
             List<Client> clients = getClientByName(nom);
             foreach(Client client in clients ) 
-            { 
-                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1;";
+            {
+                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
                 SqlDataReader reader = Connexion.execute_Select(req);
                 
 
@@ -114,9 +114,29 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         }
-                        f.Avoir = discardChequesIfAvoir(f);
+                        f.Avoir = false;
                         result.Add(f);
                         
+                    }
+                }
+
+                //Obtenir les avoirs
+                //
+                req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+                reader = Connexion.execute_Select(req);
+                while (reader.Read())
+                {
+                    req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                    SqlDataReader reader2 = Connexion.execute_Select(req);
+                    DateTime date;
+                    if (reader2.Read())
+                    {
+                        date = reader2.GetDateTime(0);
+                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                        date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                        f.ChequeAssocieGenere = false;                       
+                        f.Avoir = true;
+                        result.Add(f);
                     }
                 }
 
@@ -140,7 +160,7 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         }
-                        f.Avoir = discardChequesIfAvoir(f);
+                        f.Avoir = false;
                         result.Add(f);
                     }
 
@@ -154,7 +174,7 @@ namespace DB
 
         public List<Facture> getFactureByDate(DateTime start, DateTime end)
         {
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1;";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
 
             List<Facture> result = new List<Facture>();
@@ -172,11 +192,31 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
 
                 }
 
+            }
+
+            //Obtenir les avoirs
+            //
+            req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+            reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                    f.Avoir = true;
+                    result.Add(f);
+                }
             }
 
 
@@ -199,7 +239,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
 
@@ -216,7 +256,7 @@ namespace DB
             List<Client> clients = getClientByName(nom);
             foreach (Client client in clients)
             {
-                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1;";
+                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
                 SqlDataReader reader = Connexion.execute_Select(req);
 
 
@@ -228,16 +268,36 @@ namespace DB
                     if (reader2.Read())
                     {
                         date = reader2.GetDateTime(0);
-                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
+                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                         f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                         if (f.ChequeAssocieGenere)
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         }
-                        f.Avoir = discardChequesIfAvoir(f);
+                        f.Avoir = false;
                         result.Add(f);
                     }
 
+                }
+
+                //Obtenir les avoirs
+                //
+                req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+                reader = Connexion.execute_Select(req);
+                while (reader.Read())
+                {
+                    req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                    SqlDataReader reader2 = Connexion.execute_Select(req);
+                    DateTime date;
+                    if (reader2.Read())
+                    {
+                        date = reader2.GetDateTime(0);
+                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
+                        date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                        f.ChequeAssocieGenere = false;
+                        f.Avoir = true;
+                        result.Add(f);
+                    }
                 }
 
 
@@ -260,7 +320,7 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         }
-                        f.Avoir = discardChequesIfAvoir(f);
+                        f.Avoir = false;
                         result.Add(f);
                     }
 
@@ -282,7 +342,7 @@ namespace DB
             while (reader.Read())
             {
                 
-                    res += Convert.ToDouble((Decimal)reader.GetSqlDecimal(6));
+                    res += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6))*0.95);
                 
             }
             Connexion.close();
@@ -299,7 +359,7 @@ namespace DB
             while (reader.Read())
             {
                 
-               res += Convert.ToDouble((Decimal)reader.GetSqlDecimal(6));
+               res += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6))*0.95);
                 
             }
             Connexion.close();
@@ -309,8 +369,8 @@ namespace DB
         public List<Facture> getFactureByNumClient(String id)
         {
             List<Facture> result = new List<Facture>();
-            
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + id + "' and E_NUMLIGNE=1;";
+
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + id + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
 
             while (reader.Read())
@@ -327,10 +387,30 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
                 
+            }
+
+            //Obtenir les avoirs
+            //
+            req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + id + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+            reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                    f.Avoir = true;
+                    result.Add(f);
+                }
             }
 
             //Obtenir les tickets
@@ -352,7 +432,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
 
@@ -370,7 +450,7 @@ namespace DB
             DateTime start = DateTime.Now;
             DateTime end = DateTime.Now.AddDays(1);
 
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1;";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
 
             List<Facture> result = new List<Facture>();
@@ -388,12 +468,34 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
 
                 }
 
             }
+
+            //Obtenir les avoirs
+            //
+            req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+            reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                    f.Avoir = true;
+                    result.Add(f);
+                }
+            }
+
+
 
             
             //Obtenir les tickets
@@ -415,7 +517,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
 
@@ -430,7 +532,7 @@ namespace DB
             DateTime start = DateTime.Now;
             DateTime end = DateTime.Now.AddDays(1);
 
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 and E_MODEP = '" + mode + "' ;";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
             SqlDataReader reader = Connexion.execute_Select(req);
 
             List<Facture> result = new List<Facture>();
@@ -449,14 +551,34 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }                
                 
             }
 
+            //Obtenir les avoirs
+            //
+            req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%' and E_MODEP = '" + mode + "';";
+            reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                    f.Avoir = true;
+                    result.Add(f);
+                }
+            }
+
             //Obtenir les tickets
-            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '"+ mode + "' ;";
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '"+ mode + "'  ;";
             reader = Connexion.execute_Select(req);
 
 
@@ -474,7 +596,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
 
@@ -484,27 +606,9 @@ namespace DB
             return result;
         }
 
-        public Boolean discardChequesIfAvoir(Facture f)
-        {
-            Boolean result = false;
-            String req = "SELECT COUNT(*) FROM ECRITURE WHERE E_JOURNAL = 'VEN' AND E_REFERENCE = '" + f.IdFacure + "' AND E_LIBELLE LIKE '%AVC%' AND E_CREDIT <> 0;" ;
-            SqlDataReader reader = Connexion.execute_Select(req);
-            if (reader.Read())
-            {
-                result = (reader.GetInt32(0) == 0 ? false : true);
-            }
-            if (result)
-            {
-                req = "UPDATE CHEQUE_FIDELITE SET AVOIR = 1 WHERE REFERENCE = 'f_" + f.IdFacure + "';";
-            }
-            Connexion.execute_Request(req);
-            Connexion.close();
-            return result;
-        }
-
         public List<Facture> getAllFactures()
         {
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE NOT LIKE '%AVC%';";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
             List<Facture> result = new List<Facture>();
             while (reader.Read())
@@ -522,11 +626,32 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }
+                               
                 
-                
+            }
+
+            //Obtenir les avoirs
+            //
+            req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+            reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                   
+                    f.Avoir = true;
+                    result.Add(f);
+                }
             }
 
             //Obtenir les tickets
@@ -548,7 +673,7 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                     }
-                    f.Avoir = discardChequesIfAvoir(f);
+                    f.Avoir = false;
                     result.Add(f);
                 }                              
                 
