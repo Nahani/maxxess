@@ -154,7 +154,7 @@ namespace PDF
             }*/
 
             // Numéro de chèque
-            gfx.DrawString("ID",
+            gfx.DrawString(Convert.ToString(aChequeFidelite.ID),
                  classical, XBrushes.Black, new XRect(475, 200, 100, 0));
          
 
