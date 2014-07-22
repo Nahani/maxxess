@@ -34,7 +34,6 @@ namespace DB
             this.totalRemise = remise;
             
             //Calculer le montant du chèque cadeau
-
             this.ChequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
         }
 
