@@ -16,6 +16,7 @@ namespace DB
         private DateTime date;
         private Boolean chequeAssocieGenere;
         private Boolean chequeAssocieBloque;
+        private ChequeFidelite chequeAssocie;
         private Boolean hasAvoir;
         private String modeReglement;
         private TypePiece type;
@@ -34,7 +35,7 @@ namespace DB
             this.totalRemise = remise;
             
             //Calculer le montant du chèque cadeau
-            this.ChequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
+            this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
         }
 
         public String isChequeAssocieGenere
@@ -51,6 +52,17 @@ namespace DB
         public String HasAvoir
         {
             get { return hasAvoir ? "Oui" : "Non"; }
+        }
+
+        public string chequeID
+        {
+            get { return chequeAssocieGenere ? Convert.ToString(chequeAssocie.ID) : "-"; }
+        }
+
+        public ChequeFidelite ChequeAssocie
+        {
+            get { return chequeAssocie; }
+            set { chequeAssocie = value; }
         }
 
         public Boolean Avoir
