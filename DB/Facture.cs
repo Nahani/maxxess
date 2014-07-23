@@ -21,6 +21,7 @@ namespace DB
         private String modeReglement;
         private TypePiece type;
         private Double totalRemise;
+        private Boolean isUsed;
 
         
         public Facture(int idFacture, String libelle, double total, DateTime date, String modeReglement, TypePiece type, Client client, Double remise)
@@ -33,6 +34,7 @@ namespace DB
             this.modeReglement = modeReglement;
             this.type = type;
             this.totalRemise = remise;
+            this.isUsed = false;
             
             //Calculer le montant du chèque cadeau
             this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
@@ -47,6 +49,12 @@ namespace DB
         {
             get { return chequeAssocieGenere; }
             set { chequeAssocieGenere = value; }
+        }
+
+        public Boolean IsUsed
+        {
+            get { return isUsed; }
+            set { isUsed = value; }
         }
 
         public String HasAvoir

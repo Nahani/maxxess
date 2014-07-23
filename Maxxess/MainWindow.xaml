@@ -2,15 +2,43 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Maxxess - Factures" Height="586" Width="1050"
+        Title="Maxxess - Factures" Height="586" Width="1070"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" >
-   
-    <Grid Background="#FF00C5FF" Margin="0,0,0,-2" Width="1036">
-        <ListView x:Name="listViewFactures" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="1050" MouseDoubleClick="ListView_MouseDoubleClick">
+
+    <Window.Resources>
+        <Style x:Key="ItemContStyle" TargetType="{x:Type ListViewItem}">
+            <Style.Resources>                
+                <LinearGradientBrush x:Key="LossBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0.1" Color="#AAFF0000" />
+                    <GradientStop Offset="0.8" Color="#55FF0000" />
+                </LinearGradientBrush>
+
+            </Style.Resources>
+
+            <!-- Stretch the content so that we can right-align values 
+           in the Balance column. -->
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+            <Style.Triggers>
+                
+                <!-- When a customer is owed money, color them red. -->
+                <DataTrigger Binding="{Binding IsUsed}" Value="true">
+                    <Setter Property="Background" Value="{StaticResource LossBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#FF00C5FF" Margin="0,0,0,-2" HorizontalAlignment="Left" Width="1060">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="534*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="listViewFactures" ItemContainerStyle="{StaticResource ItemContStyle}" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="1058" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    
+
                     <GridViewColumn Width="160" Header="Nom" 
                                     DisplayMemberBinding="{Binding Client.Nom}"/>
                     <GridViewColumn Width="200" Header="Adresse" 
@@ -36,24 +64,24 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,4,0,0" Click="Bt_Nom_Click">
+        <Button x:Name="Bt_Nom" Content="Nom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,4,0,0" Click="Bt_Nom_Click" Height="20">
 
         </Button>
         <TextBox x:Name="txt_search" HorizontalAlignment="Left" Height="23" Margin="10,29,0,0" TextWrapping="Wrap" Text="Rechercher un client" VerticalAlignment="Top" Width="134" GotFocus="txt_search_GotFocus" KeyDown="txt_search_KeyDown"/>
-        <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1">
+        <Button x:Name="Bt_numClient" Content="N° Client" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75" Click="Bt_numClient_Click" RenderTransformOrigin="0.52,-0.1" Height="20">
 
         </Button>
-        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="719,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" />
-        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="609,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click"/>
-        <Label x:Name="lb_TotalJour" Content="" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.447,-0.654" Width="146"/>
-        <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False"/>
-        <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False"/>
-        <Button x:Name="bt_Clients" Content="Clients" HorizontalAlignment="Left" Margin="311,5,0,0" VerticalAlignment="Top" Width="75" Click="bt_Clients_Click"  Background="#FFDDF025"/>
+        <Button x:Name="bt_FactureJour" Content="Factures du jours" HorizontalAlignment="Left" Margin="849,5,0,0" VerticalAlignment="Top" Width="106" Click="bt_FactureJour_Click" Height="20" />
+        <Button x:Name="bt_AllFactures" Content="Toutes les factures" HorizontalAlignment="Left" Margin="731,5,0,0" VerticalAlignment="Top" Width="104" Click="bt_AllFactures_Click" Height="20"/>
+        <Label x:Name="lb_TotalJour" Content="" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.447,-0.654" Width="146" Height="26"/>
+        <Button x:Name="bt_Cheque" Content="Chèque" HorizontalAlignment="Left" Margin="250,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_Cheque_Click"  IsEnabled="False" Height="20"/>
+        <Button x:Name="bt_CB" Content="CB" HorizontalAlignment="Left" Margin="351,524,0,0" VerticalAlignment="Top" Width="75" Click="bt_CB_Click"  IsEnabled="False" Height="20"/>
+        <Button x:Name="bt_Clients" Content="Clients" HorizontalAlignment="Left" Margin="311,5,0,0" VerticalAlignment="Top" Width="75" Click="bt_Clients_Click"  Background="#FFDDF025" Height="20"/>
 
-        <Image x:Name="img_refresh" HorizontalAlignment="Left" Height="23" Margin="898,32,0,0" VerticalAlignment="Top" Width="29" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Source="{StaticResource refresh}"/>
-        <DatePicker x:Name="date_picker_start" HorizontalAlignment="Left" Margin="211,31,0,0" VerticalAlignment="Top" BorderThickness="0"/>
-        <DatePicker x:Name="date_picker_end" HorizontalAlignment="Left" Margin="374,32,0,0" VerticalAlignment="Top" BorderThickness="0"/>
-        <Button x:Name="bt_filtrer_date" Content="Filtrer" HorizontalAlignment="Left" Margin="526,33,0,0" VerticalAlignment="Top" Width="42" Opacity="0.65" Click="bt_filtrer_date_Click"/>
+        <Image x:Name="img_refresh" HorizontalAlignment="Left" Height="23" Margin="1029,29,0,0" VerticalAlignment="Top" Width="29" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" Source="{StaticResource refresh}"/>
+        <DatePicker x:Name="date_picker_start" HorizontalAlignment="Left" Margin="211,31,0,0" VerticalAlignment="Top" BorderThickness="0" Height="22" Width="147"/>
+        <DatePicker x:Name="date_picker_end" HorizontalAlignment="Left" Margin="374,32,0,0" VerticalAlignment="Top" BorderThickness="0" Height="22" Width="147"/>
+        <Button x:Name="bt_filtrer_date" Content="Filtrer" HorizontalAlignment="Left" Margin="526,33,0,0" VerticalAlignment="Top" Width="42" Opacity="0.65" Click="bt_filtrer_date_Click" Height="20"/>
 
     </Grid>
 </Window>

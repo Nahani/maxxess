@@ -618,6 +618,22 @@ namespace DB
             return result;
         }
 
+        public Boolean chequeFideliteAssocieIsUsed(Facture f)
+        {
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 and E_REFERENCE='" + f.IdFacure +"' AND E_LIBELLE LIKE '%CHQFD" + f.IdFacure + "%';";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if(reader.Read())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+           
+        }
+
         public List<Facture> getAllFactures()
         {
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
@@ -638,6 +654,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                    }
+                    if (chequeFideliteAssocieIsUsed(f))
+                    {
+                        f.IsUsed = true;
+                        f.ChequeAssocieBloque = true;
                     }
                     f.Avoir = false;
                     result.Add(f);
