@@ -52,7 +52,7 @@ namespace Maxxess
             }
 
             aChequeFidelite = new ChequeFidelite(facture.ChequeCadeau, facture.Client.Nom, facture.Client,
-               DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE", type +facture.IdFacure);
+               DateTime.Now, DateTime.Now.AddMonths(3), "MAXXESS NICE", type +facture.IdFacure, false);
         }
 
         private void bt_generer_Click(object sender, RoutedEventArgs e)

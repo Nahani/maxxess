@@ -114,7 +114,13 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                             f.ChequeAssocie = getChequeFideliteByFacture(f);
+                            if (chequeFideliteAssocieIsUsed(f))
+                            {
+                                f.IsUsed = true;
+                                f.ChequeAssocieBloque = true;
+                            }
                         }
+                        
                         f.Avoir = false;
                         result.Add(f);
                         
@@ -161,6 +167,11 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                             f.ChequeAssocie = getChequeFideliteByFacture(f);
+                            if (chequeFideliteAssocieIsUsed(f))
+                            {
+                                f.IsUsed = true;
+                                f.ChequeAssocieBloque = true;
+                            }
                         }
                         f.Avoir = false;
                         result.Add(f);
@@ -194,7 +205,13 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
+                    
                     f.Avoir = false;
                     result.Add(f);
 
@@ -242,6 +259,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
                     f.Avoir = false;
                     result.Add(f);
@@ -278,7 +300,13 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                             f.ChequeAssocie = getChequeFideliteByFacture(f);
+                            if (chequeFideliteAssocieIsUsed(f))
+                            {
+                                f.IsUsed = true;
+                                f.ChequeAssocieBloque = true;
+                            }
                         }
+                        
                         f.Avoir = false;
                         result.Add(f);
                     }
@@ -325,6 +353,11 @@ namespace DB
                         {
                             f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                             f.ChequeAssocie = getChequeFideliteByFacture(f);
+                            if (chequeFideliteAssocieIsUsed(f))
+                            {
+                                f.IsUsed = true;
+                                f.ChequeAssocieBloque = true;
+                            }
                         }
                         f.Avoir = false;
                         result.Add(f);
@@ -393,7 +426,12 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
-                    }
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
+                    }                    
                     f.Avoir = false;
                     result.Add(f);
                 }
@@ -439,6 +477,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
                     f.Avoir = false;
                     result.Add(f);
@@ -476,7 +519,12 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
-                    }
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
+                    }                    
                     f.Avoir = false;
                     result.Add(f);
 
@@ -526,6 +574,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
                     f.Avoir = false;
                     result.Add(f);
@@ -561,7 +614,12 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
-                    }
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
+                    }                    
                     f.Avoir = false;
                     result.Add(f);
                 }                
@@ -607,6 +665,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
                     f.Avoir = false;
                     result.Add(f);
@@ -620,7 +683,7 @@ namespace DB
 
         public Boolean chequeFideliteAssocieIsUsed(Facture f)
         {
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 and E_REFERENCE='" + f.IdFacure +"' AND E_LIBELLE LIKE '%CHQFD" + f.IdFacure + "%';";
+            String req = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + f.ChequeAssocie.ID + "%';";
             SqlDataReader reader = Connexion.execute_Select(req);
             if(reader.Read())
             {
@@ -632,6 +695,22 @@ namespace DB
             }
 
            
+        }
+
+        public Boolean chequeFideliteIsUsed(int idCheque)
+        {
+            String req = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + idCheque + "%';";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            if (reader.Read())
+            {                
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
         }
 
         public List<Facture> getAllFactures()
@@ -654,12 +733,13 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
-                    if (chequeFideliteAssocieIsUsed(f))
-                    {
-                        f.IsUsed = true;
-                        f.ChequeAssocieBloque = true;
-                    }
+                    
                     f.Avoir = false;
                     result.Add(f);
                 }
@@ -707,6 +787,11 @@ namespace DB
                     {
                         f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
                         f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
                     }
                     f.Avoir = false;
                     result.Add(f);
@@ -728,7 +813,7 @@ namespace DB
             {
                 Client associated_client = getClientById(reader.GetString(3));
                 targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9), chequeFideliteIsUsed(reader.GetInt32(0)));
             }
             Connexion.close();
             return targeted_cheque;
@@ -754,7 +839,7 @@ namespace DB
             {
                 Client associated_client = getClientById(reader.GetString(3));
                 targeted_cheque = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), associated_client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9), chequeFideliteIsUsed(reader.GetInt32(0)));
             }
             Connexion.close();
             return targeted_cheque;
@@ -767,7 +852,7 @@ namespace DB
             List<ChequeFidelite> result = new List<ChequeFidelite>();
             while (reader.Read())
                 result.Add(new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), client,
-                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9)));
+                    reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9), chequeFideliteIsUsed(reader.GetInt32(0))));
             Connexion.close();
             return result;
         }
