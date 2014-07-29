@@ -5,9 +5,31 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="ItemContStyle" TargetType="{x:Type ListViewItem}">
+            <Style.Resources>
+                <LinearGradientBrush x:Key="LossBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0.1" Color="#AAFF0000" />
+                    <GradientStop Offset="0.8" Color="#55FF0000" />
+                </LinearGradientBrush>
 
+            </Style.Resources>
+
+            <!-- Stretch the content so that we can right-align values 
+           in the Balance column. -->
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+            <Style.Triggers>
+
+                <!-- When a customer is owed money, color them red. -->
+                <DataTrigger Binding="{Binding Used}" Value="true">
+                    <Setter Property="Background" Value="{StaticResource LossBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid Background="#FF00C5FF" Margin="0,0,0,-2" HorizontalAlignment="Left" Width="447">
-        <ListView x:Name="listViewCheques" ItemsSource="{Binding ChequesCollection}" Height="271" VerticalAlignment="Top" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,0,-166,0">
+        <ListView x:Name="listViewCheques" ItemContainerStyle="{StaticResource ItemContStyle}" ItemsSource="{Binding ChequesCollection}" Height="271" VerticalAlignment="Top" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,0,-166,0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="70" Header="ID" 
