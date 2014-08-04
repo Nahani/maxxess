@@ -110,7 +110,7 @@ namespace PDF
               classical, XBrushes.Red, 69, 83);
 
             // Date header
-            gfx.DrawString(dateDebut.AddDays(-1).ToString("dd MMMM yyyy", francais) + " à Nice" /*+ UppercaseFirst(magasin)*/,
+            gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais) + " à Nice" /*+ UppercaseFirst(magasin)*/,
               classical, XBrushes.Red, 272, 83);
 
             // N° de compte header
@@ -118,11 +118,11 @@ namespace PDF
               classical, XBrushes.Red, new XRect(103, 101, 100, 0));
 
             // Début validité header
-            gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
+            gfx.DrawString(dateDebut.AddDays(1).ToString("dd MMMM yyyy", francais),
               classical, XBrushes.Red, 68, 119);
 
             // Fin validité header
-            gfx.DrawString(dateFin.ToString("dd MMMM yyyy", francais),
+            gfx.DrawString(dateFin.AddDays(1).ToString("dd MMMM yyyy", francais),
               classical, XBrushes.Red, 172, 119);
 
             // Magasin header
