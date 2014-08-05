@@ -693,8 +693,6 @@ namespace DB
             {
                 return false;
             }
-
-           
         }
 
         public Boolean chequeFideliteIsUsed(int idCheque)

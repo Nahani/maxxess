@@ -17,8 +17,6 @@ namespace PDF
         //private static string filename = "Maxxess.pdf";
         private static PdfDocument document;
 
-        
-
         public static string UppercaseFirst(string s)
         {
             // Check for empty string.
