@@ -157,7 +157,7 @@ namespace PDF
          
 
             // Date second
-            gfx.DrawString(dateDebut.ToString("dd MMMM yyyy", francais),
+            gfx.DrawString(dateDebut.AddDays(1).ToString("dd MMMM yyyy", francais),
              big_date, XBrushes.Red, new XRect(228, 235, 100, 0), XStringFormats.Center);
 
             // Client second
