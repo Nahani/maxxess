@@ -8,6 +8,10 @@ using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Security;
 using DB;
 using System.Globalization;
+using MigraDoc.DocumentObjectModel;
+using HelloMigraDoc;
+using MigraDoc.Rendering;
+using System.Collections.Generic;
 
 namespace PDF
 {
@@ -16,6 +20,8 @@ namespace PDF
         private static XGraphics gfx;
         //private static string filename = "Maxxess.pdf";
         private static PdfDocument document;
+
+        public static CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
         public static string UppercaseFirst(string s)
         {
@@ -53,8 +59,6 @@ namespace PDF
             hasOwnerAccess = document.SecuritySettings.HasOwnerPermissions;
 
             gfx = XGraphics.FromPdfPage(document.Pages[0]);
-
-            CultureInfo francais = CultureInfo.GetCultureInfo("fr-FR");
 
             float amount = (float)aChequeFidelite.Montant;
             string civilite = aChequeFidelite.Client.Civilite;
@@ -183,10 +187,34 @@ namespace PDF
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            string newFileName = "cheque_" + aChequeFidelite.ID + "_" + aChequeFidelite.DateDebutValidite.ToString("dd_mm_yyyy", francais) + ".pdf";
+            string newFileName = "cheque_" + aChequeFidelite.ID + "_" + aChequeFidelite.DateDebutValidite.ToString("dd_MM_yyyy", francais) + ".pdf";
             document.Save(Path.Combine(path, newFileName));
             Process.Start(Path.Combine(path, newFileName));
         }
+
+        public static void generateJourneeDeVente(DateTime date, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+        {
+            Document document = Documents.CreateDocument(date, CBs, cheques, especes, div);
+
+            MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "MigraDoc.mdddl");
+
+            PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);
+            renderer.Document = document;
+
+            renderer.RenderDocument();
+
+            string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ventes/");
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            string filename = "JDV_" + date.ToString("dd_MM_yyyy", francais) + ".pdf";
+            renderer.PdfDocument.Save(Path.Combine(path, filename));
+
+            Process.Start(Path.Combine(path, filename));
+        }
     }
+
+
 
 }

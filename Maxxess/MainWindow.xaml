@@ -82,6 +82,6 @@
         <DatePicker x:Name="date_picker_start" HorizontalAlignment="Left" Margin="211,31,0,0" VerticalAlignment="Top" BorderThickness="0" Height="22" Width="147"/>
         <DatePicker x:Name="date_picker_end" HorizontalAlignment="Left" Margin="374,32,0,0" VerticalAlignment="Top" BorderThickness="0" Height="22" Width="147"/>
         <Button x:Name="bt_filtrer_date" Content="Filtrer" HorizontalAlignment="Left" Margin="526,33,0,0" VerticalAlignment="Top" Width="42" Opacity="0.65" Click="bt_filtrer_date_Click" Height="20"/>
-
+        <Button Content="Générer les ventes journalières" Height="22" HorizontalAlignment="Left" Margin="758,32,0,0" Name="ventes_button" Visibility="Hidden" VerticalAlignment="Top" Width="169" Click="vente_Click" />
     </Grid>
 </Window>

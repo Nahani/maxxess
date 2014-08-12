@@ -31,19 +31,17 @@
 using System;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using System.Collections.Generic;
+using DB;
+using PDF;
 
 namespace HelloMigraDoc
 {
   public class Tables
   {
-    public static void DefineTables(Document document)
+      public static void DefineTables(Document document, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
     {
-      Paragraph paragraph = document.LastSection.AddParagraph("Table Overview", "Heading1");
-      paragraph.AddBookmark("Tables");
-
-      DemonstrateSimpleTable(document);
-      DemonstrateAlignment(document);
-      DemonstrateCellMerge(document);
+      DemonstrateSimpleTable(document, CBs, cheques, especes, div);
     }
 
     public static void addRow(Table iTable, String aNumber, String anAmount,
@@ -58,6 +56,7 @@ namespace HelloMigraDoc
         anAmountCell.AddParagraph(anAmount);
 
         Cell aModeReglementCell = aRow.Cells[2];
+        aModeReglement = resolveLabel(aModeReglement);
         aModeReglementCell.AddParagraph(aModeReglement);
 
         Cell aDateCell = aRow.Cells[3];
@@ -68,61 +67,145 @@ namespace HelloMigraDoc
     public static void addTotalRow(Table iTable, String total, String label = null)
     {
         Row aTotalRow = iTable.AddRow();
+        aTotalRow.Shading.Color = Colors.Gainsboro;
+        if (label == null)
+        {
+            aTotalRow.Shading.Color = Colors.RoyalBlue;
+        }
+        else
+        {          
+            label = resolveLabel(label).ToLower();
+        }
         aTotalRow.Format.Alignment = ParagraphAlignment.Right;
         aTotalRow.Format.Font.Bold = true;
-        aTotalRow.Cells[0].AddParagraph("Total " + label +"  : " + total);
+        aTotalRow.Cells[0].AddParagraph("Total (" + label + ")  : " + String.Format("{0:0.00}", total) + "€");
         aTotalRow.Cells[0].MergeRight = 3;
     }
 
-    public static void DemonstrateSimpleTable(Document document)
-    {
-      document.LastSection.AddParagraph("Simple Tables", "Heading2");
+    private static string resolveLabel(string label){
+        switch (label)
+            {
+                case "CHQ":
+                    label = "Chèque";
+                    break;
+                case "ESP":
+                    label = "Espèces";
+                    break;
+                case "DIV":
+                    label = "Div";
+                    break;
+                case "CB":
+                    label = "Carte de crédit";
+                    break;
+                default: break;
+            }
+        return label;
+    }
 
-      Table table = new Table();
+    public static void DemonstrateSimpleTable(Document document, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+    {
+    
+      Table table = document.LastSection.AddTable();
+      table.Format.Alignment = ParagraphAlignment.Center;
       table.Borders.Width = 0.75;
 
       Column column = table.AddColumn();
+      column.Width = 50;
       column.Format.Alignment = ParagraphAlignment.Center;
       column = table.AddColumn();
+      column.Width = 130;
       column.Format.Alignment = ParagraphAlignment.Center;
 
       column = table.AddColumn();
+      column.Width = 130;
       column.Format.Alignment = ParagraphAlignment.Center;
       column = table.AddColumn();
+      column.Width = 130;
       column.Format.Alignment = ParagraphAlignment.Center;
 
       Row row = table.AddRow();
+      row.Format.Alignment = ParagraphAlignment.Center;
+      row.Height = 20;
       row.Shading.Color = Colors.PaleGoldenrod;
       Cell cell = row.Cells[0];
+      cell.VerticalAlignment = VerticalAlignment.Center;
       cell.AddParagraph("N°");
       cell = row.Cells[1];
+      cell.VerticalAlignment = VerticalAlignment.Center;
       cell.AddParagraph("Montant");
       cell = row.Cells[2];
-      cell.AddParagraph("Mode règlement");
+      cell.VerticalAlignment = VerticalAlignment.Center;
+      cell.AddParagraph("Mode de règlement");
       cell = row.Cells[3];
+      cell.VerticalAlignment = VerticalAlignment.Center;
       cell.AddParagraph("Date");
 
-      addRow(table, "1", "200", "CB", "20/10/2014");
-      addRow(table, "2", "200", "CB", "20/10/2014");
-      addRow(table, "3", "200", "CB", "20/10/2014");
-      addRow(table, "4", "200", "CB", "20/10/2014");
-      addRow(table, "5", "200", "CB", "20/10/2014");
+      double sum_cb = 0, sum_cheques = 0, sum_especes = 0, sum_div = 0;
+      string mode = null;
 
-      addTotalRow(table,"1000", "CB");
+      if (CBs != null && CBs.Count > 0)
+      {
+          foreach (Facture f in CBs)
+          {
+              if (mode == null)
+              {
+                  mode = f.ModeReglement;
+              }
+              sum_cb += f.Total;
+              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+          }
+          addTotalRow(table, Convert.ToString(sum_cb), mode);
+      }
 
-      addRow(table, "1", "200", "CHEQUE", "20/10/2014");
-      addRow(table, "2", "200", "CHEQUE", "20/10/2014");
-      addRow(table, "3", "200", "CHEQUE", "20/10/2014");
-      addRow(table, "4", "200", "CHEQUE", "20/10/2014");
-      addRow(table, "5", "200", "CHEQUE", "20/10/2014");
+      if (cheques != null && cheques.Count > 0)
+      {
+          mode = null;
+          foreach (Facture f in cheques)
+          {
+              if (mode == null)
+              {
+                  mode = f.ModeReglement;
+              }
+              sum_cheques += f.Total;
+              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+          }
+          addTotalRow(table, Convert.ToString(sum_cheques), mode);
+      }
 
-      addTotalRow(table,"1000", "CHEQUE");
+      if (especes != null && especes.Count > 0)
+      {
+          mode = null;
+          foreach (Facture f in especes)
+          {
+              if (mode == null)
+              {
+                  mode = f.ModeReglement;
+              }
+              sum_especes += f.Total;
+              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+          }
+          addTotalRow(table, Convert.ToString(sum_especes), mode);
+      }
 
-      addTotalRow(table, "2000");
+      if (div != null && div.Count > 0)
+      {
+          mode = null;
+          foreach (Facture f in div)
+          {
+              if (mode == null)
+              {
+                  mode = f.ModeReglement;
+              }
+              sum_div += f.Total;
+              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+          }
+          addTotalRow(table, Convert.ToString(sum_div), mode);
+      }
 
-      table.SetEdge(0, 0, 4, 7, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
+      addTotalRow(table, Convert.ToString(sum_cb + sum_cheques + sum_div + sum_especes));
 
-      document.LastSection.Add(table);
+      //table.SetEdge(0, 0, 4, 1, Edge.Box, BorderStyle.Single, 0.75, Colors.Black);
+
     }
 
     public static void DemonstrateAlignment(Document document)

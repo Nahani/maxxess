@@ -599,6 +599,7 @@ namespace DB
             SqlDataReader reader = Connexion.execute_Select(req);
 
             List<Facture> result = new List<Facture>();
+
             while (reader.Read())
             {
 
@@ -685,30 +686,26 @@ namespace DB
         {
             String req = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + f.ChequeAssocie.ID + "%';";
             SqlDataReader reader = Connexion.execute_Select(req);
-            if(reader.Read())
+            bool result = false;
+            if (reader.Read())
             {
-                return true;
+                result = true;
             }
-            else
-            {
-                return false;
-            }
+            Connexion.close();
+            return result;
         }
 
         public Boolean chequeFideliteIsUsed(int idCheque)
         {
             String req = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + idCheque + "%';";
             SqlDataReader reader = Connexion.execute_Select(req);
+            bool result = false;
             if (reader.Read())
-            {                
-                return true;
-            }
-            else
             {
-                return false;
+                result = true;
             }
-
-
+            Connexion.close();
+            return result;
         }
 
         public List<Facture> getAllFactures()
@@ -740,9 +737,9 @@ namespace DB
                     
                     f.Avoir = false;
                     result.Add(f);
+                    reader2.Close();
                 }
-                               
-                
+              
             }
 
             //Obtenir les avoirs
@@ -769,7 +766,6 @@ namespace DB
             //Obtenir les tickets
             req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE;";
             reader = Connexion.execute_Select(req);
-            
             
             while (reader.Read())
             {
@@ -894,6 +890,7 @@ namespace DB
             {
                 result = (reader.GetInt32(0) == 0 ? false : true);
             }
+            Connexion.close();
             return result;
         }
 

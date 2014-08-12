@@ -32,55 +32,29 @@ using System;
 using System.Diagnostics;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.Rendering;
+using PDF;
+using System.Collections.Generic;
+using DB;
 
 namespace HelloMigraDoc
 {
   class Documents
   {
-    public static Document CreateDocument()
+      public static Document CreateDocument(DateTime date, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
     {
-      // Create a new MigraDoc document
       Document document = new Document();
-      document.Info.Title = "Hello, MigraDoc";
-      document.Info.Subject = "Demonstrates an excerpt of the capabilities of MigraDoc.";
-      document.Info.Author = "Stefan Lange";
-
-      Styles.DefineStyles(document);
-
-      Cover.DefineCover(document);
-      TableOfContents.DefineTableOfContents(document);
-
-      DefineContentSection(document);
-      Tables.DefineTables(document);
-
+      DefineContentSection(document, date);
+      Tables.DefineTables(document, CBs, cheques, especes, div);
       return document;
     }
 
-    /// <summary>
-    /// Defines page setup, headers, and footers.
-    /// </summary>
-    static void DefineContentSection(Document document)
+    static void DefineContentSection(Document document, DateTime date)
     {
       Section section = document.AddSection();
-      section.PageSetup.OddAndEvenPagesHeaderFooter = true;
-      section.PageSetup.StartingNumber = 1;
 
       HeaderFooter header = section.Headers.Primary;
-      header.AddParagraph("\tOdd Page Header");
+      header.AddParagraph("Journée de vente - " + date.ToString("dd MMMM yyyy", PDFUtils.francais));
       
-      header = section.Headers.EvenPage;
-      header.AddParagraph("Even Page Header");
-
-      // Create a paragraph with centered page number. See definition of style "Footer".
-      Paragraph paragraph = new Paragraph();
-      paragraph.AddTab();
-      paragraph.AddPageField();
-
-      // Add paragraph to footer for odd pages.
-      section.Footers.Primary.Add(paragraph);
-      // Add clone of paragraph to footer for odd pages. Cloning is necessary because an object must
-      // not belong to more than one other object. If you forget cloning an exception is thrown.
-      section.Footers.EvenPage.Add(paragraph.Clone());
     }
   }
 }

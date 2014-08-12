@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DB;
 using System.Collections.ObjectModel;
+using PDF;
 
 namespace Maxxess
 {
@@ -189,8 +190,9 @@ namespace Maxxess
 
         private void bt_FactureJour_Click(object sender, RoutedEventArgs e)
         {
+            ventes_button.Visibility = Visibility.Visible;
             facturesCollection.Clear();
-            factures = App.access.getFacturesOfDay();
+            //factures = App.access.getFacturesOfDay();
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             double totalJour = 0;
@@ -214,7 +216,6 @@ namespace Maxxess
             BrushConverter bc = new BrushConverter();
             bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
             bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
-
             bt_FactureJour.Background = Brushes.LightGreen;
             bt_AllFactures.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
 
@@ -222,6 +223,7 @@ namespace Maxxess
 
         private void bt_AllFactures_Click(object sender, RoutedEventArgs e)
         {
+            ventes_button.Visibility = Visibility.Hidden;
             facturesCollection.Clear();
             factures = App.access.getAllFactures();
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
@@ -380,6 +382,35 @@ namespace Maxxess
             
            
         }
+
+        private void vente_Click(object sender, RoutedEventArgs e)
+        {
+            List<Facture> CBs = App.access.getFacturesOfDayByMode("CB");
+            CBs.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+ 
+            List<Facture> cheques = App.access.getFacturesOfDayByMode("CHQ");
+            cheques.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+
+            List<Facture> especes = App.access.getFacturesOfDayByMode("ESP");
+            especes.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+
+            List<Facture> div = App.access.getFacturesOfDayByMode("DIV");
+            div.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+
+            if (CBs.Count == 0 && cheques.Count == 0 && especes.Count == 0 && div.Count == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Aucune vente n'a été réalisée aujourd'hui",
+                          "Ventes journalières Maxxess",
+                          System.Windows.Forms.MessageBoxButtons.OK,
+                          System.Windows.Forms.MessageBoxIcon.Exclamation,
+                          System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            }
+            else
+            {
+                PDFUtils.generateJourneeDeVente(DateTime.Now, CBs, cheques, especes, div);
+            }
+
+         }
 
 
     }

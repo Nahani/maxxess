@@ -23,7 +23,7 @@ namespace DB
     {
         // Information relatives à la connexion à la base de données éponyme
         static String info = "Server=" + System.Environment.MachineName + "\\SQLEXPRESS;Database=MAXXESS;Integrated Security=true;";
-        //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=DEMOMAXXESS;User Id=sa;Password=cegid.2005;";
+        //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         // Objet de connexion en lien direct avec la base de données
         static SqlConnection connection;
