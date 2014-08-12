@@ -70,6 +70,7 @@ namespace HelloMigraDoc
         aTotalRow.Shading.Color = Colors.Gainsboro;
         if (label == null)
         {
+            label = "tout mode de règlement confondu";
             aTotalRow.Shading.Color = Colors.RoyalBlue;
         }
         else
@@ -83,7 +84,7 @@ namespace HelloMigraDoc
     }
 
     private static string resolveLabel(string label){
-        switch (label)
+        switch (label.Trim().ToUpper())
             {
                 case "CHQ":
                     label = "Chèque";
@@ -92,10 +93,10 @@ namespace HelloMigraDoc
                     label = "Espèces";
                     break;
                 case "DIV":
-                    label = "Div";
+                    label = "Divers";
                     break;
                 case "CB":
-                    label = "Carte de crédit";
+                    label = "Carte bancaire";
                     break;
                 default: break;
             }

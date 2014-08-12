@@ -36,7 +36,7 @@ namespace DB
 
         List<Facture> getFacturesOfDay();
 
-        List<Facture> getFacturesOfDayByMode(String mode);
+        List<Facture> getFacturesOfDayByMode(String mode, DateTime? target = null);
 
         bool bloquerChequeFidelite(ChequeFidelite cheque);
 

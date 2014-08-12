@@ -590,10 +590,15 @@ namespace DB
             return result;
         }
 
-        public List<Facture> getFacturesOfDayByMode(String mode)
+        public List<Facture> getFacturesOfDayByMode(String mode, DateTime? target = null)
         {
             DateTime start = DateTime.Now;
-            DateTime end = DateTime.Now.AddDays(1);
+            if (target != null)
+            {
+                start = target.Value;
+            }
+
+            DateTime end = start.AddDays(1);
 
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
             SqlDataReader reader = Connexion.execute_Select(req);
