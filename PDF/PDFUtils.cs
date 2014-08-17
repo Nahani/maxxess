@@ -192,9 +192,9 @@ namespace PDF
             Process.Start(Path.Combine(path, newFileName));
         }
 
-        public static void generateJourneeDeVente(DateTime date, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+        public static void generateJourneeDeVente(DateTime date, DateTime? targetedDate)
         {
-            Document document = Documents.CreateDocument(date, CBs, cheques, especes, div);
+            Document document = Documents.CreateDocument(date, targetedDate);
 
             MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "MigraDoc.mdddl");
 

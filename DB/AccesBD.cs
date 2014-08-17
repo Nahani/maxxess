@@ -42,7 +42,7 @@ namespace DB
 
         Boolean chequeFideliteAssocieExists(Facture aFacture);
 
-   
+        List<KeyValuePair<String, String>> getModeReglement();
 
     }
 }

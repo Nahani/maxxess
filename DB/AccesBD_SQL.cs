@@ -1418,5 +1418,22 @@ namespace DB
             return flag;
         }
 
+        public List<KeyValuePair<String, String>> getModeReglement()
+        {
+            List<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
+
+            String req = "SELECT * FROM MODEREGLE";
+            
+            SqlDataReader reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                KeyValuePair<string,string> target = new KeyValuePair<string,string>(reader.GetString(0),reader.GetString(1)); 
+                result.Add(target);
+            }
+            Connexion.close();
+
+            return result;
+        }
+
     }
 }

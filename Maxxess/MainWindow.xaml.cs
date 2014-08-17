@@ -377,41 +377,40 @@ namespace Maxxess
                     facturesCollection.Add(f);
                 }
             }
-            
-           
         }
 
         private void vente_Click(object sender, RoutedEventArgs e)
         {
             DateTime? target = (dateVentes.SelectedDate == null ? DateTime.Now : dateVentes.SelectedDate);
+            List<KeyValuePair<String, String>> modeReglements = App.access.getModeReglement();
+            Boolean exists = false;
 
-            List<Facture> CBs = App.access.getFacturesOfDayByMode("CB", target);
-            CBs.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            foreach (KeyValuePair<String, String> reglement in modeReglements)
+            {
+                List<Facture> factures = App.access.getFacturesOfDayByMode(reglement.Key, target);
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
 
-            List<Facture> cheques = App.access.getFacturesOfDayByMode("CHQ", target);
-            cheques.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                if (factures != null && factures.Count > 0)
+                {
+                    exists = true;
+                    break;
+                }
 
-            List<Facture> especes = App.access.getFacturesOfDayByMode("ESP", target);
-            especes.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            }
 
-            List<Facture> div = App.access.getFacturesOfDayByMode("DIV", target);
-            div.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-
-            if (CBs.Count == 0 && cheques.Count == 0 && especes.Count == 0 && div.Count == 0)
+            if (!exists)
             {
                 System.Windows.Forms.MessageBox.Show("Aucune vente n'a été réalisée le " + target.Value.ToString("dd MMMM yyyy", PDFUtils.francais),
-                          "Ventes journalières Maxxess",
-                          System.Windows.Forms.MessageBoxButtons.OK,
-                          System.Windows.Forms.MessageBoxIcon.Exclamation,
-                          System.Windows.Forms.MessageBoxDefaultButton.Button2);
+                    "Ventes journalières Maxxess",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation,
+                    System.Windows.Forms.MessageBoxDefaultButton.Button2);
             }
             else
             {
-                PDFUtils.generateJourneeDeVente(target.Value, CBs, cheques, especes, div);
+                PDFUtils.generateJourneeDeVente(target.Value, target);
             }
 
          }
-
-
     }
 }

@@ -40,11 +40,11 @@ namespace HelloMigraDoc
 {
   class Documents
   {
-      public static Document CreateDocument(DateTime date, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+      public static Document CreateDocument(DateTime date, DateTime? targetedDate)
     {
       Document document = new Document();
       DefineContentSection(document, date);
-      Tables.DefineTables(document, CBs, cheques, especes, div);
+      Tables.DefineTables(document, targetedDate);
       return document;
     }
 

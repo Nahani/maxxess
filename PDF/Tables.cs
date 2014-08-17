@@ -39,9 +39,9 @@ namespace HelloMigraDoc
 {
   public class Tables
   {
-      public static void DefineTables(Document document, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+      public static void DefineTables(Document document, DateTime? targetedDate)
     {
-      DemonstrateSimpleTable(document, CBs, cheques, especes, div);
+      DemonstrateSimpleTable(document, targetedDate);
     }
 
     public static void addRow(Table iTable, String aNumber, String anAmount,
@@ -103,7 +103,7 @@ namespace HelloMigraDoc
         return label;
     }
 
-    public static void DemonstrateSimpleTable(Document document, List<Facture> CBs, List<Facture> cheques, List<Facture> especes, List<Facture> div)
+    public static void DemonstrateSimpleTable(Document document, DateTime? targetedDate)
     {
     
       Table table = document.LastSection.AddTable();
@@ -141,69 +141,29 @@ namespace HelloMigraDoc
       cell.VerticalAlignment = VerticalAlignment.Center;
       cell.AddParagraph("Date");
 
-      double sum_cb = 0, sum_cheques = 0, sum_especes = 0, sum_div = 0;
-      string mode = null;
+      AccesBD_SQL instanceDB = AccesBD_SQL.Instance;
+      List<KeyValuePair<String, String>> modeReglements = instanceDB.getModeReglement();
+      double totalSum = 0.0;
 
-      if (CBs != null && CBs.Count > 0)
+      foreach (KeyValuePair<String, String> reglement in modeReglements)
       {
-          foreach (Facture f in CBs)
-          {
-              if (mode == null)
-              {
-                  mode = f.ModeReglement;
-              }
-              sum_cb += f.Total;
-              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
-          }
-          addTotalRow(table, Convert.ToString(sum_cb), mode);
-      }
+          List<Facture> factures = instanceDB.getFacturesOfDayByMode(reglement.Key, targetedDate);
+          factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
 
-      if (cheques != null && cheques.Count > 0)
-      {
-          mode = null;
-          foreach (Facture f in cheques)
+          if (factures != null && factures.Count > 0)
           {
-              if (mode == null)
+              double sum = 0.0;
+              foreach (Facture f in factures)
               {
-                  mode = f.ModeReglement;
+                  sum += f.Total;
+                  addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
               }
-              sum_cheques += f.Total;
-              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+              totalSum += sum;
+              addTotalRow(table, Convert.ToString(sum), reglement.Value);
           }
-          addTotalRow(table, Convert.ToString(sum_cheques), mode);
-      }
 
-      if (especes != null && especes.Count > 0)
-      {
-          mode = null;
-          foreach (Facture f in especes)
-          {
-              if (mode == null)
-              {
-                  mode = f.ModeReglement;
-              }
-              sum_especes += f.Total;
-              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
-          }
-          addTotalRow(table, Convert.ToString(sum_especes), mode);
       }
-
-      if (div != null && div.Count > 0)
-      {
-          mode = null;
-          foreach (Facture f in div)
-          {
-              if (mode == null)
-              {
-                  mode = f.ModeReglement;
-              }
-              sum_div += f.Total;
-              addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
-          }
-          addTotalRow(table, Convert.ToString(sum_div), mode);
-      }
-
-      addTotalRow(table, Convert.ToString(sum_cb + sum_cheques + sum_div + sum_especes));
+      addTotalRow(table, Convert.ToString(totalSum)); 
 
       //table.SetEdge(0, 0, 4, 1, Edge.Box, BorderStyle.Single, 0.75, Colors.Black);
 
