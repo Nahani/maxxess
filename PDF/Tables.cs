@@ -145,12 +145,15 @@ namespace HelloMigraDoc
       List<KeyValuePair<String, String>> modeReglements = instanceDB.getModeReglement();
       double totalSum = 0.0;
       List<KeyValuePair<Facture, double>> prelevements = new List<KeyValuePair<Facture,double>>();
-        
+      DateTime date = DateTime.Now;
+      if (targetedDate.Value != null)
+          date = targetedDate.Value;
 
       foreach (KeyValuePair<String, String> reglement in modeReglements)
       {
           List<Facture> factures = instanceDB.getFacturesOfDayByMode(reglement.Key, targetedDate);
           factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+          
 
           if (factures != null && factures.Count > 0)
           {
@@ -158,7 +161,7 @@ namespace HelloMigraDoc
               foreach (Facture f in factures)
               {
                   sum += f.Total;
-                  addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+                  addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, date.ToString("dd/MM/yyyy", PDFUtils.francais));
                   double totalPrelevement = instanceDB.getIfPrelevement(f.IdFacure);
                   if (totalPrelevement > 0.0)
                       prelevements.Add(new KeyValuePair<Facture, double>(f, totalPrelevement));
@@ -175,7 +178,7 @@ namespace HelloMigraDoc
 
           sumPre += p.Value;
           Facture f = p.Key;
-          addRow(table, Convert.ToString(f.IdFacure), p.Value.ToString() + " €", "Prélèvement", f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+          addRow(table, Convert.ToString(f.IdFacure), p.Value.ToString() + " €", "Prélèvement", date.ToString("dd/MM/yyyy", PDFUtils.francais));
 
       }
       if(sumPre> 0.0)
