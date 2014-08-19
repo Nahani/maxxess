@@ -590,6 +590,20 @@ namespace DB
             return result;
         }
 
+        public double getIfPrelevement(int idFacture)
+        {
+            String req = "SELECT E_DEBIT FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_REFERENCE=" + idFacture + " and E_MODEP= 'PRE' and E_LIBELLE LIKE '%FAC%';";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            double res = 0;
+
+            while (reader.Read())
+            {
+                res += Convert.ToDouble((Decimal)reader.GetSqlDecimal(0));
+            }
+
+            return res;
+        }
+
         public List<Facture> getFacturesOfDayByMode(String mode, DateTime? target = null)
         {
             DateTime start = DateTime.Now;

@@ -144,6 +144,8 @@ namespace HelloMigraDoc
       AccesBD_SQL instanceDB = AccesBD_SQL.Instance;
       List<KeyValuePair<String, String>> modeReglements = instanceDB.getModeReglement();
       double totalSum = 0.0;
+      List<KeyValuePair<Facture, double>> prelevements = new List<KeyValuePair<Facture,double>>();
+        
 
       foreach (KeyValuePair<String, String> reglement in modeReglements)
       {
@@ -157,12 +159,28 @@ namespace HelloMigraDoc
               {
                   sum += f.Total;
                   addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+                  double totalPrelevement = instanceDB.getIfPrelevement(f.IdFacure);
+                  if (totalPrelevement > 0.0)
+                      prelevements.Add(new KeyValuePair<Facture, double>(f, totalPrelevement));
+
               }
               totalSum += sum;
               addTotalRow(table, Convert.ToString(sum), reglement.Value);
           }
 
       }
+      double sumPre = 0.0;
+      foreach (KeyValuePair<Facture, double> p in prelevements)
+      {
+
+          sumPre += p.Value;
+          Facture f = p.Key;
+          addRow(table, Convert.ToString(f.IdFacure), p.Value.ToString() + " €", "Prélèvement", f.Date.ToString("dd/MM/yyyy", PDFUtils.francais));
+
+      }
+      if(sumPre> 0.0)
+          addTotalRow(table, Convert.ToString(sumPre), "Prélèvements");
+      totalSum += sumPre;
       addTotalRow(table, Convert.ToString(totalSum)); 
 
       //table.SetEdge(0, 0, 4, 1, Edge.Box, BorderStyle.Single, 0.75, Colors.Black);
