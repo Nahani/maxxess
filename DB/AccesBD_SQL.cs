@@ -612,7 +612,7 @@ namespace DB
                 start = target.Value;
             }
 
-            DateTime end = start.AddDays(1);
+            DateTime end = start;
 
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
             SqlDataReader reader = Connexion.execute_Select(req);
