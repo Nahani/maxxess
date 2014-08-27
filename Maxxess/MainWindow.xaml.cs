@@ -408,7 +408,17 @@ namespace Maxxess
             }
             else
             {
-                PDFUtils.generateJourneeDeVente(target.Value, target);
+                try
+                {
+                    PDFUtils.generateJourneeDeVente(target.Value, target);
+                }
+                catch(Exception er){
+                    System.Windows.Forms.MessageBox.Show("Impossible de générer le pdf : " + er.Message,
+                   "Ventes journalières Maxxess",
+                   System.Windows.Forms.MessageBoxButtons.OK,
+                   System.Windows.Forms.MessageBoxIcon.Exclamation,
+                   System.Windows.Forms.MessageBoxDefaultButton.Button2);
+                }
             }
 
          }
