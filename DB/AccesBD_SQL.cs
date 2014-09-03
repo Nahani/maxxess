@@ -28,6 +28,9 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
+        //static String info = "Server=" + System.Environment.MachineName + ";Database=Maxxess;Integrated Security=true;";
+        static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
+
         private AccesBD_SQL() { }
 
         public static AccesBD_SQL Instance
@@ -107,8 +110,15 @@ namespace DB
                     DateTime date;
                     if (reader2.Read())
                     {
+                        /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                        SqlDataReader reader3 = Connexion.execute_Select(req);
+                        Double total = 0.0;
+                        if (reader3.Read())
+                        {
+                            total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                        }*/
                         date = reader2.GetDateTime(0);
-                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, client,getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
+                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, client, getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                         f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                         if (f.ChequeAssocieGenere)
                         {
@@ -140,7 +150,7 @@ namespace DB
                     {
                         date = reader2.GetDateTime(0);
                         Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                        date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                        date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                         f.ChequeAssocieGenere = false;                       
                         f.Avoir = true;
                         result.Add(f);
@@ -198,6 +208,13 @@ namespace DB
                 DateTime date;
                 if (reader2.Read())
                 {
+                    /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader3 = Connexion.execute_Select(req);
+                    Double total = 0.0;
+                    if (reader3.Read())
+                    {
+                        total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                    }*/
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
@@ -232,7 +249,7 @@ namespace DB
                 {
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                     f.ChequeAssocieGenere = false;
                     f.Avoir = true;
                     result.Add(f);
@@ -293,8 +310,15 @@ namespace DB
                     DateTime date;
                     if (reader2.Read())
                     {
+                       /* req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                        SqlDataReader reader3 = Connexion.execute_Select(req);
+                        Double total = 0.0;
+                        if (reader3.Read())
+                        {
+                            total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                        }*/
                         date = reader2.GetDateTime(0);
-                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
+                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                         f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                         if (f.ChequeAssocieGenere)
                         {
@@ -326,7 +350,7 @@ namespace DB
                     {
                         date = reader2.GetDateTime(0);
                         Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
-                        date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                        date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                         f.ChequeAssocieGenere = false;
                         f.Avoir = true;
                         result.Add(f);
@@ -419,6 +443,13 @@ namespace DB
                 DateTime date;
                 if (reader2.Read())
                 {
+                   /* req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader3 = Connexion.execute_Select(req);
+                    Double total = 0.0;
+                    if (reader3.Read())
+                    {
+                        total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                    }*/
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(id), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
@@ -451,7 +482,7 @@ namespace DB
                 {
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                     f.ChequeAssocieGenere = false;
                     f.Avoir = true;
                     result.Add(f);
@@ -512,6 +543,13 @@ namespace DB
                 DateTime date;
                 if (reader2.Read())
                 {
+                    /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader3 = Connexion.execute_Select(req);
+                    Double total = 0.0;
+                    if (reader3.Read())
+                    {
+                        total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                    }*/
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
@@ -545,7 +583,7 @@ namespace DB
                 {
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                     f.ChequeAssocieGenere = false;
                     f.Avoir = true;
                     result.Add(f);
@@ -627,6 +665,13 @@ namespace DB
                 DateTime date;
                 if (reader2.Read())
                 {
+                    /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader3 = Connexion.execute_Select(req);
+                    Double total = 0.0;
+                    if (reader3.Read())
+                    {
+                        total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                    }*/
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
                     f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
@@ -659,7 +704,7 @@ namespace DB
                 {
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                     f.ChequeAssocieGenere = false;
                     f.Avoir = true;
                     result.Add(f);
@@ -729,6 +774,118 @@ namespace DB
 
         public List<Facture> getAllFactures()
         {
+            List<Facture> factures = new List<Facture>();
+            using (SqlConnection connection = new SqlConnection(info))
+            {
+                connection.Open();
+                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE;";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+                    
+                    //Command 1
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            factures.Add(new Facture(Convert.ToInt32(reader.GetString(0)), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), new Client(reader.GetString(4),reader.GetString(6), reader.GetString(5),reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11))));
+                        }
+                    }
+                    
+                    foreach(Facture f in factures)
+                    {
+                        //Obtenir le total
+                        command.CommandText= "SELECT SUM(E_DEBIT) FROM ECRITURE E WHERE E.E_JOURNAL = 'VEN' and E_LIBELLE NOT LIKE '%Remise%' and E.E_LIBELLE LIKE '%FAC%' and E.E_REFERENCE= " + f.IdFacure +  " GROUP BY E.E_REFERENCE;";
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                f.Total = Convert.ToDouble((Decimal)reader.GetSqlDecimal(0));
+                            }
+                        }
+
+                        //Obtenir la remise
+                        Double remise = 0.0;
+                        command.CommandText = "SELECT * FROM LIGNES WHERE L_NUMEROPIECE =" + f.IdFacure + " and L_TYPEPIECE = 'FAC' and L_TAUXREMISE=5;";
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {                
+                                remise += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6))*0.95);
+                            }
+                            f.TotalRemise = remise;
+                        }
+
+                        //Check ifChequeAssocierGenere
+                        command.CommandText = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "'";
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                f.ChequeAssocieGenere = (reader.GetInt32(0) == 0 ? false : true);
+                            }
+                        }
+
+
+                        if (f.ChequeAssocieGenere)
+                        {
+                            //Check if cheque blocked
+                            command.CommandText = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "' AND BLOQUE = 1";
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    f.ChequeAssocieBloque = (reader.GetInt32(0) == 0 ? false : true);
+                                }
+                            }
+
+
+                            //Get cheque
+                            command.CommandText = "SELECT * FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "'";
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+
+                                    f.ChequeAssocie = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), f.Client,
+                                        reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9), chequeFideliteIsUsed(reader.GetInt32(0)));
+                                }
+                            }
+
+
+                            //Get if used
+                            command.CommandText = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + f.ChequeAssocie.ID + "%';";
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                bool chequeUsed = false;
+                                if (reader.Read())
+                                {
+                                    chequeUsed = true;
+                                }
+
+                                if (chequeUsed)
+                                {
+                                    f.IsUsed = true;
+                                    f.ChequeAssocieBloque = true;
+                                }
+                            }
+                        }
+                           
+
+                        f.Avoir = false;
+
+                    }
+                }
+            }
+
+            return factures;
+
+           
+
+        }
+
+        public List<Facture> getAllFactures2()
+        {
             String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
             SqlDataReader reader = Connexion.execute_Select(req);
             List<Facture> result = new List<Facture>();
@@ -739,6 +896,13 @@ namespace DB
                 DateTime date;
                 if (reader2.Read())
                 {
+                    /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader3 = Connexion.execute_Select(req);
+                    Double total = 0.0;
+                    if (reader3.Read())
+                    {
+                        total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                    }*/
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)),
                     date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
@@ -774,7 +938,7 @@ namespace DB
                 {
                     date = reader2.GetDateTime(0);
                     Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
-                    date, reader.GetString(37), TypePiece.Facture, getClientById(reader.GetString(5)), 0.0);
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
                     f.ChequeAssocieGenere = false;
                    
                     f.Avoir = true;

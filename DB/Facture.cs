@@ -5,10 +5,10 @@ using System.Text;
 
 namespace DB
 {
-    public enum TypePiece { Facture, Ticket };
+    public enum TypePiece { Facture, Ticket, Avoir };
     public class Facture
     {
-        private int idFacure;
+        private int idFacture;
         private String libelle;
         private double total;              
         private Client client;
@@ -21,6 +21,16 @@ namespace DB
         private String modeReglement;
         private TypePiece type;
         private Double totalRemise;
+
+        public Double TotalRemise
+        {
+            get { return totalRemise; }
+            set
+            {
+                totalRemise = value;  //Calculer le montant du chèque cadeau
+                this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
+            }
+        }
         private Boolean chequeAssocieUsed;
 
         
@@ -38,6 +48,15 @@ namespace DB
             
             //Calculer le montant du chèque cadeau
             this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
+        }
+
+        public Facture(int idFacture, String libelle, String modeReglement, DateTime date, Client client)
+        {
+            this.idFacture = idFacture;
+            this.libelle = libelle;
+            this.modeReglement = modeReglement;
+            this.Date = date;
+            this.Client = client;
         }
 
         public String isChequeAssocieGenere
@@ -96,8 +115,8 @@ namespace DB
 
         public int IdFacure
         {
-            get { return idFacure; }
-            set { idFacure = value; }
+            get { return idFacture; }
+            set { idFacture = value; }
         }
 
         public String Libelle

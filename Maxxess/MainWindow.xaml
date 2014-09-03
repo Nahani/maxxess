@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Maxxess - Factures" Height="586" Width="1070"
+        Title="Maxxess - Factures" Height="586" Width="1113.284"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" >
 
     <Window.Resources>
         <Style x:Key="ItemContStyle" TargetType="{x:Type ListViewItem}">
-            <Style.Resources>                
+            <Style.Resources>
                 <LinearGradientBrush x:Key="LossBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Offset="0.1" Color="#AAFF0000" />
                     <GradientStop Offset="0.8" Color="#55FF0000" />
@@ -21,7 +21,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
             <Style.Triggers>
-                
+
                 <!-- When a customer is owed money, color them red. -->
                 <DataTrigger Binding="{Binding IsUsed}" Value="true">
                     <Setter Property="Background" Value="{StaticResource LossBrush}" />
@@ -30,15 +30,18 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="#FF00C5FF" Margin="0,0,0,-2" HorizontalAlignment="Left" Width="1060">
+    <Grid Background="#FF00C5FF" Margin="0,0,0,-2" HorizontalAlignment="Left" Width="1103">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="534*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="listViewFactures" ItemContainerStyle="{StaticResource ItemContStyle}" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="1058" MouseDoubleClick="ListView_MouseDoubleClick">
+        <ListView x:Name="listViewFactures" ItemContainerStyle="{StaticResource ItemContStyle}" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="1103" MouseDoubleClick="ListView_MouseDoubleClick" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
-
+                    <GridViewColumn Width="35" Header="ID"
+                                    DisplayMemberBinding="{Binding IdFacure}"/>
+                    <GridViewColumn Width="50" Header="Type"
+                                    DisplayMemberBinding="{Binding Type}"/>
                     <GridViewColumn Width="160" Header="Nom" 
                                     DisplayMemberBinding="{Binding Client.Nom}"/>
                     <GridViewColumn Width="200" Header="Adresse" 
@@ -51,11 +54,12 @@
                                     DisplayMemberBinding="{Binding TotalEuros}"/>
                     <GridViewColumn Width="70" Header="Mode"
                                     DisplayMemberBinding="{Binding ModeReglement}"/>
+
                     <GridViewColumn Width="100" Header="Chèque cadeau"
                                     DisplayMemberBinding="{Binding ChequeCadeauEuros}"/>
                     <GridViewColumn Width="50" Header="Généré"
                                     DisplayMemberBinding="{Binding isChequeAssocieGenere}"/>
-                    <GridViewColumn Width="100" Header="ID Chèque"
+                    <GridViewColumn Width="60" Header="ID Chèque"
                                     DisplayMemberBinding="{Binding chequeID}"/>
                     <GridViewColumn Width="50" Header="Bloqué"
                                     DisplayMemberBinding="{Binding isChequeAssocieBloque}"/>
