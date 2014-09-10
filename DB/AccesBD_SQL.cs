@@ -652,7 +652,155 @@ namespace DB
 
             DateTime end = start;
 
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "'and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
+            
+
+            List<Facture> factures = new List<Facture>();
+            using (SqlConnection connection = new SqlConnection(info))
+            {
+                connection.Open();
+                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE, E_DEBIT  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "'and E_MODEP = '" + mode + "';";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+
+                    //Command 1
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Facture f = new Facture(Convert.ToInt32(reader.GetString(0)), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), new Client(reader.GetString(4), reader.GetString(6), reader.GetString(5), reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11)));
+                            f.Total = Convert.ToDouble((Decimal)reader.GetSqlDecimal(12));
+                            factures.Add(f);
+                        }
+                    }
+
+                    foreach (Facture f in factures)
+                    {
+                        
+                        //Obtenir la remise
+                        Double remise = 0.0;
+                        command.CommandText = "SELECT * FROM LIGNES WHERE L_NUMEROPIECE =" + f.IdFacure + " and L_TYPEPIECE = 'FAC' and L_TAUXREMISE=5;";
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                remise += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6)) * 0.95);
+                            }
+                            f.TotalRemise = remise;
+                        }
+
+                        //Check ifChequeAssocierGenere
+                        command.CommandText = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "'";
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                f.ChequeAssocieGenere = (reader.GetInt32(0) == 0 ? false : true);
+                            }
+                        }
+
+
+                        if (f.ChequeAssocieGenere)
+                        {
+                            //Check if cheque blocked
+                            command.CommandText = "SELECT COUNT(*) FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "' AND BLOQUE = 1";
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    f.ChequeAssocieBloque = (reader.GetInt32(0) == 0 ? false : true);
+                                }
+                            }
+
+
+                            //Get cheque
+                            command.CommandText = "SELECT * FROM CHEQUE_FIDELITE WHERE REFERENCE = 'f_" + f.IdFacure + "'";
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+
+                                    f.ChequeAssocie = new ChequeFidelite(reader.GetInt32(0), Convert.ToDouble((Decimal)reader.GetSqlDecimal(1)), reader.GetString(2), f.Client,
+                                        reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), reader.GetBoolean(7), reader.GetString(8), reader.GetBoolean(9), chequeFideliteIsUsed(reader.GetInt32(0)));
+                                }
+                            }
+
+
+                            //Get if used
+                            command.CommandText = "SELECT L_NUMEROPIECE FROM LIGNES WHERE L_ARTICLE = 'CHQFID' AND L_LIBELLE LIKE '%CHQFD" + f.ChequeAssocie.ID + "%';";
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                bool chequeUsed = false;
+                                if (reader.Read())
+                                {
+                                    chequeUsed = true;
+                                }
+
+                                if (chequeUsed)
+                                {
+                                    f.IsUsed = true;
+                                    f.ChequeAssocieBloque = true;
+                                }
+                            }
+                        }
+
+
+                        f.Avoir = false;
+
+                    }
+                }
+            }
+        
+
+            //Obtenir les tickets
+            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '" + mode + "'  ;";
+            SqlDataReader readerOld = Connexion.execute_Select(req);
+
+
+            while (readerOld.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + readerOld.GetInt32(0) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(readerOld.GetInt32(0), readerOld.GetString(4), Convert.ToDouble((Decimal)readerOld.GetSqlDecimal(2)), date, readerOld.GetString(5), TypePiece.Ticket, getClientById(readerOld.GetString(3)), getRemiseTicket(readerOld.GetInt32(0)));
+                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                    if (f.ChequeAssocieGenere)
+                    {
+                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                        f.ChequeAssocie = getChequeFideliteByFacture(f);
+                        if (chequeFideliteAssocieIsUsed(f))
+                        {
+                            f.IsUsed = true;
+                            f.ChequeAssocieBloque = true;
+                        }
+                    }
+                    f.Avoir = false;
+                    factures.Add(f);
+                }
+
+            }
+
+            Connexion.close();
+            return factures;
+        }
+
+      
+
+        public List<Facture> getFacturesOfDayByMode2(String mode, DateTime? target = null)
+        {
+            DateTime start = DateTime.Now;
+            if (target != null)
+            {
+                start = target.Value;
+            }
+
+            DateTime end = start;
+
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "'and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
             SqlDataReader reader = Connexion.execute_Select(req);
 
             List<Facture> result = new List<Facture>();
