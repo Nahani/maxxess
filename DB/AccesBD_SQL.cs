@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        //static String info = "Server=" + System.Environment.MachineName + ";Database=Maxxess;Integrated Security=true;";
+        //static String info = "Server=" + System.Environment.MachineName + "\\SQLEXPRESS;Database=MAXXESS;Integrated Security=true;";
         static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
