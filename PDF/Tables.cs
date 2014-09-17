@@ -104,6 +104,9 @@ namespace HelloMigraDoc
                 case "CB":
                     label = "Carte bancaire";
                     break;
+                case "PRE":
+                    label = "Prélèvement";
+                    break;
                 default: break;
             }
             return label;
@@ -163,7 +166,7 @@ namespace HelloMigraDoc
             AccesBD_SQL instanceDB = AccesBD_SQL.Instance;
             List<KeyValuePair<String, String>> modeReglements = instanceDB.getModeReglement();
             double totalSum = 0.0;
-            List<KeyValuePair<Facture, double>> prelevements = new List<KeyValuePair<Facture, double>>();
+            //List<KeyValuePair<Facture, double>> prelevements = new List<KeyValuePair<Facture, double>>();
             DateTime date = DateTime.Now;
             if (targetedDate.Value != null)
                 date = targetedDate.Value;
@@ -181,9 +184,9 @@ namespace HelloMigraDoc
                     {
                         sum += f.Total;
                         addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Client.Nom, f.Type.ToString(), date.ToString("dd/MM/yyyy", PDFUtils.francais));
-                        double totalPrelevement = instanceDB.getIfPrelevement(f.IdFacure);
+                        /*double totalPrelevement = instanceDB.getIfPrelevement(f.IdFacure);
                         if (totalPrelevement > 0.0)
-                            prelevements.Add(new KeyValuePair<Facture, double>(f, totalPrelevement));
+                            prelevements.Add(new KeyValuePair<Facture, double>(f, totalPrelevement));*/
 
                     }
                     totalSum += sum;
@@ -191,7 +194,7 @@ namespace HelloMigraDoc
                 }
 
             }
-            double sumPre = 0.0;
+            /*double sumPre = 0.0;
             foreach (KeyValuePair<Facture, double> p in prelevements)
             {
 
@@ -202,7 +205,7 @@ namespace HelloMigraDoc
             }
             if (sumPre > 0.0)
                 addTotalRow(table, Convert.ToString(sumPre), "Prélèvements");
-            totalSum += sumPre;
+            totalSum += sumPre;*/
             addTotalRow(table, Convert.ToString(totalSum));
 
             //table.SetEdge(0, 0, 4, 1, Edge.Box, BorderStyle.Single, 0.75, Colors.Black);
