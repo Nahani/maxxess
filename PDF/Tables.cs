@@ -66,7 +66,7 @@ namespace HelloMigraDoc
             anAmountCell.AddParagraph(anAmount);
 
             Cell aModeReglementCell = aRow.Cells[3];
-            aModeReglement = resolveLabel(aModeReglement);
+           // aModeReglement = resolveLabel(aModeReglement);
             aModeReglementCell.AddParagraph(aModeReglement);
 
             Cell aClientCell = aRow.Cells[2];
@@ -85,10 +85,10 @@ namespace HelloMigraDoc
                 label = "tout mode de règlement confondu";
                 aTotalRow.Shading.Color = Colors.RoyalBlue;
             }
-            else
+            /*else
             {
                 label = resolveLabel(label).ToLower();
-            }
+            }*/
             aTotalRow.Format.Alignment = ParagraphAlignment.Right;
             aTotalRow.Format.Font.Bold = true;
             aTotalRow.Cells[0].AddParagraph("Total (" + label + ")  : " + String.Format("{0:0.00}", total) + "€");
@@ -216,7 +216,7 @@ namespace HelloMigraDoc
                     foreach (Facture f in factures)
                     {
                         sum += f.Total;
-                        addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Client.Nom, f.Type.ToString(), date.ToString("dd/MM/yyyy", PDFUtils.francais));
+                        addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, reglement.Value, f.Client.Nom, f.Type.ToString(), date.ToString("dd/MM/yyyy", PDFUtils.francais));
                         /*double totalPrelevement = instanceDB.getIfPrelevement(f.IdFacure);
                         if (totalPrelevement > 0.0)
                             prelevements.Add(new KeyValuePair<Facture, double>(f, totalPrelevement));*/
