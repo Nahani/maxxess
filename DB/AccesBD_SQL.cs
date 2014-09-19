@@ -788,6 +788,41 @@ namespace DB
             return factures;
         }
 
+       
+        public List<Facture> getAvoirsOfDay(DateTime? target = null)
+        {
+            DateTime start = DateTime.Now;
+            if (target != null)
+            {
+                start = target.Value;
+            }
+
+            DateTime end = start;
+
+            List<Facture> result = new List<Facture>();
+
+            //Obtenir les avoirs
+            //
+            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%AVC%';";
+            SqlDataReader reader = Connexion.execute_Select(req);
+            while (reader.Read())
+            {
+                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'AVC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                SqlDataReader reader2 = Connexion.execute_Select(req);
+                DateTime date;
+                if (reader2.Read())
+                {
+                    date = reader2.GetDateTime(0);
+                    Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(9)),
+                    date, reader.GetString(37), TypePiece.Avoir, getClientById(reader.GetString(5)), 0.0);
+                    f.ChequeAssocieGenere = false;
+                    f.Avoir = true;
+                    result.Add(f);
+                }
+            }
+
+            return result;
+        }
       
 
         public List<Facture> getFacturesOfDayByMode2(String mode, DateTime? target = null)

@@ -38,6 +38,8 @@ namespace DB
 
         List<Facture> getFacturesOfDayByMode(String mode, DateTime? target = null);
 
+        List<Facture> getAvoirsOfDay(DateTime? target = null);
+
         bool bloquerChequeFidelite(ChequeFidelite cheque);
 
         Boolean chequeFideliteAssocieExists(Facture aFacture);

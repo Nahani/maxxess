@@ -41,7 +41,17 @@ namespace HelloMigraDoc
     {
         public static void DefineTables(Document document, DateTime? targetedDate)
         {
-            DemonstrateSimpleTable(document, targetedDate);
+            AccesBD_SQL instanceDB = AccesBD_SQL.Instance;
+
+            generateFactureAndTickets(document, targetedDate);
+
+            List<Facture> factures = instanceDB.getAvoirsOfDay(targetedDate);
+
+            if (factures != null && factures.Count > 0)
+            {
+                document.LastSection.AddParagraph("\n\nAvoirs client\n\n");
+                generateAvoirs(document, targetedDate, factures);
+            }
         }
 
         public static void addRow(Table iTable, String aNumber, String anAmount,
@@ -52,21 +62,18 @@ namespace HelloMigraDoc
             Cell aNumberCell = aRow.Cells[0];
             aNumberCell.AddParagraph(aNumber);
 
-            Cell anAmountCell = aRow.Cells[1];
+            Cell anAmountCell = aRow.Cells[3];
             anAmountCell.AddParagraph(anAmount);
 
-            Cell aModeReglementCell = aRow.Cells[2];
+            Cell aModeReglementCell = aRow.Cells[4];
             aModeReglement = resolveLabel(aModeReglement);
             aModeReglementCell.AddParagraph(aModeReglement);
 
-            Cell aClientCell = aRow.Cells[3];
+            Cell aClientCell = aRow.Cells[2];
             aClientCell.AddParagraph(aClient);
 
-            Cell aPieceCell = aRow.Cells[4];
+            Cell aPieceCell = aRow.Cells[1];
             aPieceCell.AddParagraph(aPiece);
-
-            Cell aDateCell = aRow.Cells[5];
-            aDateCell.AddParagraph(aDate);
         }
 
         public static void addTotalRow(Table iTable, String total, String label = null)
@@ -85,7 +92,7 @@ namespace HelloMigraDoc
             aTotalRow.Format.Alignment = ParagraphAlignment.Right;
             aTotalRow.Format.Font.Bold = true;
             aTotalRow.Cells[0].AddParagraph("Total (" + label + ")  : " + String.Format("{0:0.00}", total) + "€");
-            aTotalRow.Cells[0].MergeRight = 5;
+            aTotalRow.Cells[0].MergeRight = 4;
         }
 
         private static string resolveLabel(string label)
@@ -112,9 +119,8 @@ namespace HelloMigraDoc
             return label;
         }
 
-        public static void DemonstrateSimpleTable(Document document, DateTime? targetedDate)
+        private static Table initialize(Document document)
         {
-
             Table table = document.LastSection.AddTable();
             table.Format.Alignment = ParagraphAlignment.Center;
             table.Borders.Width = 0.75;
@@ -127,15 +133,12 @@ namespace HelloMigraDoc
             column.Format.Alignment = ParagraphAlignment.Center;
 
             column = table.AddColumn();
-            column.Width = 100;
+            column.Width = 180;
             column.Format.Alignment = ParagraphAlignment.Center;
-            column = table.AddColumn();
-            column.Width = 100;
-            column.Format.Alignment = ParagraphAlignment.Center;
-
             column = table.AddColumn();
             column.Width = 70;
             column.Format.Alignment = ParagraphAlignment.Center;
+
             column = table.AddColumn();
             column.Width = 100;
             column.Format.Alignment = ParagraphAlignment.Center;
@@ -147,21 +150,51 @@ namespace HelloMigraDoc
             Cell cell = row.Cells[0];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("N°");
-            cell = row.Cells[1];
-            cell.VerticalAlignment = VerticalAlignment.Center;
-            cell.AddParagraph("Montant");
-            cell = row.Cells[2];
-            cell.VerticalAlignment = VerticalAlignment.Center;
-            cell.AddParagraph("Mode de règlement");
             cell = row.Cells[3];
             cell.VerticalAlignment = VerticalAlignment.Center;
-            cell.AddParagraph("Client");
+            cell.AddParagraph("Montant");
             cell = row.Cells[4];
             cell.VerticalAlignment = VerticalAlignment.Center;
-            cell.AddParagraph("Type");
-            cell = row.Cells[5];
+            cell.AddParagraph("Mode de règlement");
+            cell = row.Cells[2];
             cell.VerticalAlignment = VerticalAlignment.Center;
-            cell.AddParagraph("Date");
+            cell.AddParagraph("Client");
+            cell = row.Cells[1];
+            cell.VerticalAlignment = VerticalAlignment.Center;
+            cell.AddParagraph("Type");
+
+            return table;
+        }
+
+        public static void generateAvoirs(Document document, DateTime? targetedDate, List<Facture> factures)
+        {
+            Table table = initialize(document);
+
+            double totalSum = 0.0;
+
+            DateTime date = DateTime.Now;
+            if (targetedDate.Value != null)
+                date = targetedDate.Value;
+
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+
+            if (factures != null && factures.Count > 0)
+            {
+                double sum = 0.0;
+                foreach (Facture f in factures)
+                {
+                    sum += f.Total;
+                    addRow(table, Convert.ToString(f.IdFacure), f.TotalEuros, f.ModeReglement, f.Client.Nom, f.Type.ToString(), date.ToString("dd/MM/yyyy", PDFUtils.francais));
+                }
+                totalSum += sum;
+                addTotalRow(table, Convert.ToString(sum), "Avoir client");
+            }
+        }
+
+        public static void generateFactureAndTickets(Document document, DateTime? targetedDate)
+        {
+
+            Table table = initialize(document);
 
             AccesBD_SQL instanceDB = AccesBD_SQL.Instance;
             List<KeyValuePair<String, String>> modeReglements = instanceDB.getModeReglement();
