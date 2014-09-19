@@ -59,20 +59,20 @@ namespace HelloMigraDoc
         {
             Row aRow = iTable.AddRow();
 
-            Cell aNumberCell = aRow.Cells[0];
+            Cell aNumberCell = aRow.Cells[1];
             aNumberCell.AddParagraph(aNumber);
 
-            Cell anAmountCell = aRow.Cells[3];
+            Cell anAmountCell = aRow.Cells[4];
             anAmountCell.AddParagraph(anAmount);
 
-            Cell aModeReglementCell = aRow.Cells[4];
+            Cell aModeReglementCell = aRow.Cells[3];
             aModeReglement = resolveLabel(aModeReglement);
             aModeReglementCell.AddParagraph(aModeReglement);
 
             Cell aClientCell = aRow.Cells[2];
             aClientCell.AddParagraph(aClient);
 
-            Cell aPieceCell = aRow.Cells[1];
+            Cell aPieceCell = aRow.Cells[0];
             aPieceCell.AddParagraph(aPiece);
         }
 
@@ -126,40 +126,40 @@ namespace HelloMigraDoc
             table.Borders.Width = 0.75;
 
             Column column = table.AddColumn();
-            column.Width = 50;
+            column.Width = 80;
             column.Format.Alignment = ParagraphAlignment.Center;
             column = table.AddColumn();
-            column.Width = 80;
+            column.Width = 50;
             column.Format.Alignment = ParagraphAlignment.Center;
 
             column = table.AddColumn();
             column.Width = 180;
             column.Format.Alignment = ParagraphAlignment.Center;
             column = table.AddColumn();
-            column.Width = 70;
+            column.Width = 100;
             column.Format.Alignment = ParagraphAlignment.Center;
 
             column = table.AddColumn();
-            column.Width = 100;
+            column.Width = 70;
             column.Format.Alignment = ParagraphAlignment.Center;
 
             Row row = table.AddRow();
             row.Format.Alignment = ParagraphAlignment.Center;
             row.Height = 20;
             row.Shading.Color = Colors.PaleGoldenrod;
-            Cell cell = row.Cells[0];
+            Cell cell = row.Cells[1];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("N°");
-            cell = row.Cells[3];
+            cell = row.Cells[4];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("Montant");
-            cell = row.Cells[4];
+            cell = row.Cells[3];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("Mode de règlement");
             cell = row.Cells[2];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("Client");
-            cell = row.Cells[1];
+            cell = row.Cells[0];
             cell.VerticalAlignment = VerticalAlignment.Center;
             cell.AddParagraph("Type");
 
