@@ -685,7 +685,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, L_DATECREATION  FROM PIECES P, REGLEDETAIL R, LIGNES L WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and L.L_TYPEPIECE = 'VTC' and L.L_NUMEROPIECE = P.PI_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 
@@ -839,41 +839,39 @@ namespace DB
 
                     }
                 }
+
+                //Obtenir les tickets
+                //
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '" + mode + "' ;";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+
+                    //Command 1
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                            f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                            if (f.ChequeAssocieGenere)
+                            {
+                                f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                                f.ChequeAssocie = getChequeFideliteByFacture(f);
+                                if (chequeFideliteAssocieIsUsed(f))
+                                {
+                                    f.IsUsed = true;
+                                    f.ChequeAssocieBloque = true;
+                                }
+                            }
+                            f.Avoir = false;
+                            factures.Add(f);
+                        }
+                    }
+                }
             }
         
 
-            //Obtenir les tickets
-            req = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '" + mode + "'  ;";
-            SqlDataReader readerOld = Connexion.execute_Select(req);
-
-
-            while (readerOld.Read())
-            {
-                req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'VTC' and L_NUMEROPIECE =" + readerOld.GetInt32(0) + ";";
-                SqlDataReader reader2 = Connexion.execute_Select(req);
-                DateTime date;
-                if (reader2.Read())
-                {
-                    date = reader2.GetDateTime(0);
-                    Facture f = new Facture(readerOld.GetInt32(0), readerOld.GetString(4), Convert.ToDouble((Decimal)readerOld.GetSqlDecimal(2)), date, readerOld.GetString(5), TypePiece.Ticket, getClientById(readerOld.GetString(3)), getRemiseTicket(readerOld.GetInt32(0)));
-                    f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                    if (f.ChequeAssocieGenere)
-                    {
-                        f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
-                        f.ChequeAssocie = getChequeFideliteByFacture(f);
-                        if (chequeFideliteAssocieIsUsed(f))
-                        {
-                            f.IsUsed = true;
-                            f.ChequeAssocieBloque = true;
-                        }
-                    }
-                    f.Avoir = false;
-                    factures.Add(f);
-                }
-
-            }
-
-            Connexion.close();
+            
             return factures;
         }
 
@@ -1177,7 +1175,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, L_DATECREATION  FROM PIECES P, REGLEDETAIL R, LIGNES L WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE and L.L_TYPEPIECE = 'VTC' and L.L_NUMEROPIECE = P.PI_NUMEROPIECE;";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE;";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 
