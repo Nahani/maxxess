@@ -1483,32 +1483,40 @@ namespace DB
         public int insertChequeFidelite(ChequeFidelite cheque)
         {
             int result = -1;
-           
-                SqlCommand req = new SqlCommand(
-               "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference, bloque, avoir) " +
-               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference, @bloque, @avoir)", Connexion.Connection);
-               
-                req.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
-                req.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
-                req.Parameters.Add("@t_auxiliaire", SqlDbType.NChar, cheque.Client.ID.Length).Value = cheque.Client.ID;
-                req.Parameters.Add("@date_deb_val", SqlDbType.DateTime).Value = cheque.DateDebutValidite;
-                req.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
-                req.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
-                req.Parameters.Add("@reference", SqlDbType.NChar, cheque.Reference.Length).Value = cheque.Reference;
-                req.Parameters.Add("@bloque", SqlDbType.Bit).Value = false;
-                req.Parameters.Add("@avoir", SqlDbType.Bit).Value = false;
 
-                Connexion.execute_Request(req);
-
-                String max = "SELECT MAX(id) FROM CHEQUE_FIDELITE;";
-                SqlDataReader reader = Connexion.execute_Select(max);
-                if (reader.Read())
+            using (SqlConnection connection = new SqlConnection(info))
+            {
+                connection.Open();
+                var queryString = "INSERT INTO CHEQUE_FIDELITE (montant, beneficiaire, t_auxiliaire,  date_deb_val, date_fin_val, magasin, reference, bloque, avoir) " +
+               "VALUES(@montant, @beneficiaire, @t_auxiliaire, @date_deb_val, @date_fin_val, @magasin, @reference, @bloque, @avoir);";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
-                    result = reader.GetInt32(0);
-                    cheque.ID = Convert.ToInt32(result);
-                }
+                    command.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
+                    command.Parameters.Add("@beneficiaire", SqlDbType.NChar, cheque.Beneficiaire.Length).Value = cheque.Beneficiaire;
+                    command.Parameters.Add("@t_auxiliaire", SqlDbType.NChar, cheque.Client.ID.Length).Value = cheque.Client.ID;
+                    command.Parameters.Add("@date_deb_val", SqlDbType.DateTime).Value = cheque.DateDebutValidite;
+                    command.Parameters.Add("@date_fin_val", SqlDbType.DateTime).Value = cheque.DateFinValidite;
+                    command.Parameters.Add("@magasin", SqlDbType.NChar, cheque.Magasin.Length).Value = cheque.Magasin;
+                    command.Parameters.Add("@reference", SqlDbType.NChar, cheque.Reference.Length).Value = cheque.Reference;
+                    command.Parameters.Add("@bloque", SqlDbType.Bit).Value = false;
+                    command.Parameters.Add("@avoir", SqlDbType.Bit).Value = false;
 
-            Connexion.close();
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "SELECT MAX(id) FROM CHEQUE_FIDELITE;";
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result = reader.GetInt32(0);
+                            cheque.ID = Convert.ToInt32(result);
+                        }
+                    }
+
+                }
+            }
+
             return result;
         }
      
