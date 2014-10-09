@@ -111,6 +111,9 @@ namespace HelloMigraDoc
                 case "CB":
                     label = "Carte bancaire";
                     break;
+                case "CBV":
+                    label = "Carte bancaire";
+                    break;
                 case "PRE":
                     label = "Prélèvement";
                     break;

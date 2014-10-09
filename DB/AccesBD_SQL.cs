@@ -685,7 +685,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and RD_TYPEPIECE = 'VTC' and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "';";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 
@@ -694,7 +694,7 @@ namespace DB
                     {
                         while (reader.Read())
                         {
-                            Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                            Facture f = new Facture(int.Parse(reader.GetString(7)[2] + reader.GetInt32(0).ToString()), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                             f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                             if (f.ChequeAssocieGenere)
                             {
@@ -741,7 +741,7 @@ namespace DB
 
             DateTime end = start;
 
-            String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "'and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
+            //String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_DATECOMPTABLE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "'and E_MODEP = '" + mode + "' AND E_LIBELLE LIKE '%FAC%' ;";
             
 
             List<Facture> factures = new List<Facture>();
@@ -842,7 +842,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '" + mode + "' ;";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION, PI_CAISSE  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and RD_TYPEPIECE = 'VTC' and PI_DATEPIECE between '" + start.ToShortDateString() + "' and '" + end.ToShortDateString() + "' and RD_MODEREGLE = '" + mode + "' ;";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 
@@ -851,7 +851,7 @@ namespace DB
                     {
                         while (reader.Read())
                         {
-                            Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                            Facture f = new Facture(int.Parse(reader.GetString(7)[2] + reader.GetInt32(0).ToString()), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                             f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                             if (f.ChequeAssocieGenere)
                             {
@@ -869,6 +869,11 @@ namespace DB
                     }
                 }
             }
+
+            if (mode.Equals("CB"))
+                factures.AddRange(getFacturesOfDayByMode("CBV", target));
+            else if (mode.Equals("ESP"))
+                factures.AddRange(getFacturesOfDayByMode("EEU", target));
         
 
             
@@ -1175,7 +1180,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE;";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION, PI_CAISSE  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and RD_TYPEPIECE = 'VTC';";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 
@@ -1184,7 +1189,7 @@ namespace DB
                     {
                         while (reader.Read())
                         {
-                            Facture f = new Facture(reader.GetInt32(0), reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
+                            Facture f = new Facture(int.Parse(reader.GetString(7)[2] +  reader.GetInt32(0).ToString()),reader.GetString(4), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetDateTime(6), reader.GetString(5), TypePiece.Ticket, getClientById(reader.GetString(3)), getRemiseTicket(reader.GetInt32(0)));
                             f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
                             if (f.ChequeAssocieGenere)
                             {
@@ -1524,17 +1529,19 @@ namespace DB
         {
             List<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
 
-            String req = "SELECT * FROM MODEREGLE";
-            
-            SqlDataReader reader = Connexion.execute_Select(req);
-            while (reader.Read())
-            {
-                KeyValuePair<string,string> target = new KeyValuePair<string,string>(reader.GetString(0),reader.GetString(1)); 
-                result.Add(target);
-            }
-            Connexion.close();
-
+            result.Add(new KeyValuePair<string, string>("CB", "Carte Bancaire"));
+            result.Add(new KeyValuePair<string, string>("CCD", "Chèque Cadeaux"));
+            result.Add(new KeyValuePair<string, string>("CHQ", "Chèque"));
+            result.Add(new KeyValuePair<string, string>("DIV", "Rétrocession"));
+            result.Add(new KeyValuePair<string, string>("ESP", "Espèces"));
+            result.Add(new KeyValuePair<string, string>("BOR", "Partenaire"));
+            result.Add(new KeyValuePair<string, string>("VIR", "PNF"));
+            result.Add(new KeyValuePair<string, string>("PRE", "PNF"));
+            //result.Add(new KeyValuePair<string, string>("CBV", "CB"));
+            //result.Add(new KeyValuePair<string, string>("EEU", "Espèces"));
+            //result.Add(new KeyValuePair<string, string>("CHI", "Chèque"));
             return result;
+          
         }
 
     }
