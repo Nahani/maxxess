@@ -57,6 +57,8 @@ namespace Maxxess
             bt_CB.Visibility = Visibility.Hidden;
             bt_Cheque.Visibility = Visibility.Hidden;
             bt_AllFactures.Background = Brushes.LightGreen;
+            label_nbfactures.FontWeight = FontWeights.Bold;
+            label_nbfactures.Content = App.access.getAllFacturesCount();
         }
 
         public ObservableCollection<Facture> FacturesCollection
@@ -422,5 +424,7 @@ namespace Maxxess
             }
 
          }
+
+
     }
 }

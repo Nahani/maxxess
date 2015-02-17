@@ -89,5 +89,9 @@
         <Button Content="Générer les ventes" Height="22" HorizontalAlignment="Right" Margin="0,29,103,0" Name="ventes_button" 
                 VerticalAlignment="Top" Width="106" Click="vente_Click" />
         <DatePicker BorderThickness="0" Height="22" HorizontalAlignment="Right" Margin="0,29,215,0" Name="dateVentes" VerticalAlignment="Top" Width="147" />
+        <Button Content="Suivant" HorizontalAlignment="Left" Margin="1016,529,0,0" VerticalAlignment="Top" Width="75" />
+        <Button Content="Précédent" HorizontalAlignment="Left" Margin="923,529,0,0" VerticalAlignment="Top" Width="75" />
+        <Label Content="Nombre de factures :" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.698,0.129" Width="134"/>
+        <Label Content="" x:Name="label_nbfactures" HorizontalAlignment="Left" Margin="124,524,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

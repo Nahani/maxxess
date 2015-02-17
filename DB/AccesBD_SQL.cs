@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=" + System.Environment.MachineName + ";Database=Maxxess;Integrated Security=true;";
+        static String info = "Server=" + System.Environment.MachineName + ";Database=MAXXESS_CLIENT;Integrated Security=true;";
         //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
@@ -1070,6 +1070,32 @@ namespace DB
             return result;
         }
 
+        public int getAllFacturesCount()
+        {
+            int result = -1;
+            using (SqlConnection connection = new SqlConnection(info))
+            {
+                connection.Open();
+
+                //Obtenir les factures
+                //
+                var queryString = "SELECT count(*) FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE;";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+
+                    //Command 1
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public List<Facture> getAllFactures()
         {
             List<Facture> factures = new List<Facture>();
@@ -1079,7 +1105,7 @@ namespace DB
 
                 //Obtenir les factures
                 //
-                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE;";
+                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE ORDER BY E.E_REFERENCE DESC OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
                     
