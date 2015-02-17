@@ -15,7 +15,7 @@ namespace DB
             Console.WriteLine(c.Adresse1);
 
            /* c = access.getClientByName("Polo");
-            Console.WriteLine(c.Adresse1);*/
+            Console.WriteLine(c.Adresse1);
 
 
             List<Facture> factures = access.getAllFactures();
@@ -26,7 +26,7 @@ namespace DB
 
             Facture facture1 = access.getFacture(1);
             Console.WriteLine(facture1.Total);
-
+*/
 
             //ChequeFidelite cf = new ChequeFidelite(01903920, 140.093, "Nolan Potier le conquérant", c, DateTime.Now, DateTime.Now, "BAGNOLE SUR SEIZE", false, "f_08");
             //access.insertChequeFidelite(cf);

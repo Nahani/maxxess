@@ -80,7 +80,7 @@ namespace Maxxess
 
             ObservableCollection<Facture> facturesCollection = new ObservableCollection<Facture>();
 
-            List<Facture> factures = App.access.getAllFactures();
+            List<Facture> factures = App.access.getAllFactures(MainWindow.filterMonth, MainWindow.filterYear);
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)

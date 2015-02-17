@@ -1096,7 +1096,7 @@ namespace DB
             return result;
         }
 
-        public List<Facture> getAllFactures()
+        public List<Facture> getAllFactures(int month, int year)
         {
             List<Facture> factures = new List<Facture>();
             using (SqlConnection connection = new SqlConnection(info))
@@ -1105,7 +1105,7 @@ namespace DB
 
                 //Obtenir les factures
                 //
-                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE ORDER BY E.E_REFERENCE DESC OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;";
+                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE AND DATEPART(yy, L.L_DATECREATION) = " + year + " AND DATEPART(mm, L.L_DATECREATION) = " + month + ";";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
                     
@@ -1206,7 +1206,7 @@ namespace DB
 
                 //Obtenir les tickets
                 //
-                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION, PI_CAISSE  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and RD_TYPEPIECE = 'VTC';";
+                queryString = "SELECT DISTINCT PI_NUMEROPIECE, PI_DATEPIECE, PI_TOTALTTC, PI_AUXILIAIRE, PI_LIBELLETIERS, RD_MODEREGLE, RD_DATECREATION, PI_CAISSE  FROM PIECES P, REGLEDETAIL R WHERE PI_TYPEPIECE = 'VTC' and P.PI_NUMEROPIECE = R.RD_NUMEROPIECE  and P.PI_CAISSE = R.RD_CAISSE and RD_TYPEPIECE = 'VTC' AND DATEPART(yy, RD_DATECREATION) = " + year + " AND DATEPART(mm, RD_DATECREATION) = " + month + ";";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
 

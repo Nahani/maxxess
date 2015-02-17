@@ -23,16 +23,45 @@ namespace Maxxess
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static int filterMonth = DateTime.Now.Month;
+        public static int filterYear = DateTime.Now.Year;
+
+        public void incrementMonthFilter()
+        {
+            if (filterMonth == 12)
+            {
+                filterMonth = 1;
+                filterYear++;
+            }
+            else
+            {
+                filterMonth++;
+            }
+        }
+
+        public void decrementMonthFilter(){
+            if (filterMonth == 1)
+            {
+                filterMonth = 12;
+                filterYear--;
+            }
+            else
+            {
+                filterMonth--;
+            }
+        }
+
         private SearchBy searchBy;
         private List<Facture> factures;
         private ObservableCollection<Facture> facturesCollection;
+
         public MainWindow()
         {
             facturesCollection =  new ObservableCollection<Facture>();
            
             try
             {
-                factures = App.access.getAllFactures();
+                factures = App.access.getAllFactures(filterMonth, filterYear);
             }
             catch(Exception e)
             {
@@ -225,7 +254,7 @@ namespace Maxxess
         private void bt_AllFactures_Click(object sender, RoutedEventArgs e)
         {
             facturesCollection.Clear();
-            factures = App.access.getAllFactures();
+            factures = App.access.getAllFactures(filterMonth, filterYear);
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)
@@ -317,7 +346,7 @@ namespace Maxxess
             if (bt_FactureJour.Background != Brushes.LightGreen)
             {
                 facturesCollection.Clear();
-                factures = App.access.getAllFactures();
+                factures = App.access.getAllFactures(filterMonth, filterYear);
                 factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
                 factures.Reverse();
                 foreach (Facture f in factures)
@@ -424,6 +453,34 @@ namespace Maxxess
             }
 
          }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            incrementMonthFilter();
+            facturesCollection.Clear();
+            factures.Clear();
+            factures = App.access.getAllFactures(filterMonth, filterYear);
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            factures.Reverse();
+            foreach (Facture f in factures)
+            {
+                facturesCollection.Add(f);
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            decrementMonthFilter();
+            facturesCollection.Clear();
+            factures.Clear();
+            factures = App.access.getAllFactures(filterMonth, filterYear);
+            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            factures.Reverse();
+            foreach (Facture f in factures)
+            {
+                facturesCollection.Add(f);
+            }
+        }
 
 
     }
