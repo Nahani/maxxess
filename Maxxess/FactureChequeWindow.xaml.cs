@@ -17,11 +17,14 @@ using System.Collections.ObjectModel;
 
 namespace Maxxess
 {
+
     /// <summary>
     /// Logique d'interaction pour FactureCheque.xaml
     /// </summary>
     public partial class FactureChequeWindow : Window
     {
+
+
         private Facture facture;
         AccesBD_SQL access;
         ChequeFidelite aChequeFidelite;
@@ -80,7 +83,7 @@ namespace Maxxess
 
             ObservableCollection<Facture> facturesCollection = new ObservableCollection<Facture>();
 
-            List<Facture> factures = App.access.getAllFactures(MainWindow.filterMonth, MainWindow.filterYear);
+            List<Facture> factures = App.access.getAllFactures(MainWindow.filterDate);
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)

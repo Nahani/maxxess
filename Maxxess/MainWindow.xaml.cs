@@ -23,33 +23,7 @@ namespace Maxxess
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static int filterMonth = DateTime.Now.Month;
-        public static int filterYear = DateTime.Now.Year;
-
-        public void incrementMonthFilter()
-        {
-            if (filterMonth == 12)
-            {
-                filterMonth = 1;
-                filterYear++;
-            }
-            else
-            {
-                filterMonth++;
-            }
-        }
-
-        public void decrementMonthFilter(){
-            if (filterMonth == 1)
-            {
-                filterMonth = 12;
-                filterYear--;
-            }
-            else
-            {
-                filterMonth--;
-            }
-        }
+        public static DateTime filterDate = DateTime.Now;
 
         private SearchBy searchBy;
         private List<Facture> factures;
@@ -61,7 +35,7 @@ namespace Maxxess
            
             try
             {
-                factures = App.access.getAllFactures(filterMonth, filterYear);
+                factures = App.access.getAllFactures(filterDate);
             }
             catch(Exception e)
             {
@@ -88,6 +62,8 @@ namespace Maxxess
             bt_AllFactures.Background = Brushes.LightGreen;
             label_nbfactures.FontWeight = FontWeights.Bold;
             label_nbfactures.Content = App.access.getAllFacturesCount();
+            label_date_listfactures.FontWeight = FontWeights.Bold;
+            updateDateListFacturesSelection();
         }
 
         public ObservableCollection<Facture> FacturesCollection
@@ -254,7 +230,7 @@ namespace Maxxess
         private void bt_AllFactures_Click(object sender, RoutedEventArgs e)
         {
             facturesCollection.Clear();
-            factures = App.access.getAllFactures(filterMonth, filterYear);
+            factures = App.access.getAllFactures(filterDate);
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)
@@ -346,7 +322,7 @@ namespace Maxxess
             if (bt_FactureJour.Background != Brushes.LightGreen)
             {
                 facturesCollection.Clear();
-                factures = App.access.getAllFactures(filterMonth, filterYear);
+                factures = App.access.getAllFactures(filterDate);
                 factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
                 factures.Reverse();
                 foreach (Facture f in factures)
@@ -454,12 +430,35 @@ namespace Maxxess
 
          }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Suivant(object sender, RoutedEventArgs e)
         {
-            incrementMonthFilter();
+            filterDate = filterDate.AddMonths(-1);
+            updateFacturesSelection();
+        }
+
+        private void Button_Precedent(object sender, RoutedEventArgs e)
+        {
+            filterDate = filterDate.AddMonths(1);
+            updateFacturesSelection();
+        }
+
+        private void date_picker_facture_months_ValueChanged(object sender, EventArgs e)
+        {
+            if (date_picker_facture_months.SelectedDate == null){
+               filterDate = DateTime.Now;
+         
+            } else {
+               filterDate = (DateTime)date_picker_facture_months.SelectedDate;
+            }
+            updateFacturesSelection();
+        }
+
+        private void updateFacturesSelection()
+        {
+            updateDateListFacturesSelection();
             facturesCollection.Clear();
             factures.Clear();
-            factures = App.access.getAllFactures(filterMonth, filterYear);
+            factures = App.access.getAllFactures(filterDate);
             factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             factures.Reverse();
             foreach (Facture f in factures)
@@ -468,18 +467,9 @@ namespace Maxxess
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void updateDateListFacturesSelection()
         {
-            decrementMonthFilter();
-            facturesCollection.Clear();
-            factures.Clear();
-            factures = App.access.getAllFactures(filterMonth, filterYear);
-            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-            factures.Reverse();
-            foreach (Facture f in factures)
-            {
-                facturesCollection.Add(f);
-            }
+            label_date_listfactures.Content = filterDate.ToString("MMMM") + " " + filterDate.Year;
         }
 
 

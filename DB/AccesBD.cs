@@ -23,7 +23,7 @@ namespace DB
 
         List<Client> getAllClients();
 
-        List<Facture> getAllFactures(int month, int year);
+        List<Facture> getAllFactures(DateTime date);
         Facture getFacture(int idFacture);
 
         ChequeFidelite getChequeFideliteById(String id);
