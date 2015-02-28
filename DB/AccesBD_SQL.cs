@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=" + System.Environment.MachineName + ";Database=MAXXESS_CLIENT;Integrated Security=true;";
+        static String info = "Server=" + System.Environment.MachineName + ";Database=MAXXESS;Integrated Security=true;";
         //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
@@ -1105,7 +1105,157 @@ namespace DB
 
                 //Obtenir les factures
                 //
-                var queryString = "SELECT E.E_REFERENCE, E.E_LIBELLE, E.E_MODEP, L.L_DATECREATION, T.T_AUXILIAIRE, T.T_NATUREAUXI, T.T_LIBELLE, T.T_ADRESSE1, T.T_ADRESSE2, T.T_CODEPOSTAL, T.T_VILLE, T.T_CIVILITE  FROM ECRITURE E, LIGNES L, TIERS T WHERE E.E_JOURNAL = 'VEN' and E.E_NUMLIGNE=1 and E.E_LIBELLE LIKE '%FAC%' and L.L_TYPEPIECE='FAC' and L.L_NUMEROLIGNE=1 and L.L_NUMEROPIECE=E.E_REFERENCE and T.T_AUXILIAIRE = E.E_AUXILIAIRE AND DATEPART(yy, L.L_DATECREATION) = " + date.Year + " AND DATEPART(mm, L.L_DATECREATION) = " + date.Month + ";";
+                var queryString = @"SELECT CASE
+WHEN T7.isUsed IS NULL THEN 'False' else 'True'
+  END as HasCheque,
+       T5.id,
+       T5.montant,
+       t5.beneficiaire,
+       t5.date_deb_val,
+       t5.date_fin_val,
+       t5.magasin,
+       t5.reference,
+       CASE
+       WHEN t5.avoir = 1 THEN 'True' else 'False'
+  END as avoir,
+       CASE
+    WHEN T5.HasCheque IS NULL THEN 'False' else 'True'
+  END as HasCheque,
+  CASE
+       WHEN t5.bloque = 1 THEN 'True' else 'False'
+  END as bloque,
+       CASE
+    WHEN T3.REMISE IS NULL THEN 0 else T3.REMISE
+  END as Remise,
+       T1.TOTAL,
+       T1.E_REFERENCE,
+       T2.E_LIBELLE,
+       T2.E_MODEP,
+       T2.L_DATECREATION,
+       T2.T_AUXILIAIRE,
+       T2.T_NATUREAUXI,
+       T2.T_LIBELLE,
+       T2.T_ADRESSE1,
+       T2.T_ADRESSE2,
+       T2.T_CODEPOSTAL,
+       T2.T_VILLE,
+       T2.T_CIVILITE
+FROM
+  (SELECT SUM(E_DEBIT) AS TOTAL,
+          E.E_REFERENCE
+   FROM ECRITURE E
+   WHERE E.E_JOURNAL = 'VEN'
+     AND E_LIBELLE NOT LIKE '%Remise%'
+     AND E.E_LIBELLE LIKE '%FAC%'
+     AND E.E_REFERENCE IN
+       (SELECT E.E_REFERENCE
+        FROM ECRITURE E,
+                      LIGNES L,
+                             TIERS T
+        WHERE E.E_JOURNAL = 'VEN'
+          AND E.E_NUMLIGNE=1
+          AND E.E_LIBELLE LIKE '%FAC%'
+          AND L.L_TYPEPIECE='FAC'
+          AND L.L_NUMEROLIGNE=1
+          AND L.L_NUMEROPIECE=E.E_REFERENCE
+          AND T.T_AUXILIAIRE = E.E_AUXILIAIRE)
+   GROUP BY E.E_REFERENCE) AS T1
+JOIN
+  (SELECT E.E_REFERENCE,
+          E.E_LIBELLE,
+          E.E_MODEP,
+          L.L_DATECREATION,
+          T.T_AUXILIAIRE,
+          T.T_NATUREAUXI,
+          T.T_LIBELLE,
+          T.T_ADRESSE1,
+          T.T_ADRESSE2,
+          T.T_CODEPOSTAL,
+          T.T_VILLE,
+          T.T_CIVILITE
+   FROM ECRITURE E,
+                 LIGNES L,
+                        TIERS T
+   WHERE E.E_JOURNAL = 'VEN'
+     AND E.E_NUMLIGNE=1
+     AND E.E_LIBELLE LIKE '%FAC%'
+     AND L.L_TYPEPIECE='FAC'
+     AND L.L_NUMEROLIGNE=1
+     AND L.L_NUMEROPIECE=E.E_REFERENCE
+     AND T.T_AUXILIAIRE = E.E_AUXILIAIRE  AND DATEPART(yy, L.L_DATECREATION) = " + date.Year + " AND DATEPART(mm, L.L_DATECREATION) = " + date.Month + @") AS T2 ON T1.E_REFERENCE=T2.E_REFERENCE
+LEFT JOIN
+  (SELECT SUM(L_PUTTC) AS REMISE,
+          L_NUMEROPIECE
+   FROM LIGNES
+   WHERE L_NUMEROPIECE IN
+       (SELECT E.E_REFERENCE
+        FROM ECRITURE E,
+                      LIGNES L,
+                             TIERS T
+        WHERE E.E_JOURNAL = 'VEN'
+          AND E.E_NUMLIGNE=1
+          AND E.E_LIBELLE LIKE '%FAC%'
+          AND L.L_TYPEPIECE='FAC'
+          AND L.L_NUMEROLIGNE=1
+          AND L.L_NUMEROPIECE=E.E_REFERENCE
+          AND T.T_AUXILIAIRE = E.E_AUXILIAIRE)
+     AND L_TYPEPIECE = 'FAC'
+     AND L_TAUXREMISE=5
+   GROUP BY L_NUMEROPIECE) AS T3 ON T3.L_NUMEROPIECE = T2.E_REFERENCE
+LEFT JOIN
+  (SELECT CASE
+              WHEN T4.NB > 0 THEN 'True'
+              ELSE 'False'
+          END AS HasCheque,
+          t4.reference,
+          T4.REF,
+          T4.bloque,
+          T4.id,
+          T4.montant,
+          T4.beneficiaire,
+          T4.date_deb_val,
+          t4.date_fin_val,
+          t4.magasin,
+          t4.avoir
+   FROM
+     (SELECT COUNT(reference) AS NB,
+             substring(REFERENCE, 3,10) AS REF,
+             reference,
+             bloque,
+             id,
+             montant,
+             beneficiaire,
+             date_deb_val,
+             date_fin_val,
+             magasin,
+             avoir
+      FROM CHEQUE_FIDELITE
+      WHERE REFERENCE IN
+          (SELECT CONCAT('f_', E.E_REFERENCE)
+           FROM ECRITURE E,
+                         LIGNES L,
+                                TIERS T
+           WHERE E.E_JOURNAL = 'VEN'
+             AND E.E_NUMLIGNE=1
+             AND E.E_LIBELLE LIKE '%FAC%'
+             AND L.L_TYPEPIECE='FAC'
+             AND L.L_NUMEROLIGNE=1
+             AND L.L_NUMEROPIECE=E.E_REFERENCE
+             AND T.T_AUXILIAIRE = E.E_AUXILIAIRE
+           GROUP BY E.E_REFERENCE)
+      GROUP BY reference,
+               bloque,
+               id,
+               montant,
+               beneficiaire,
+               date_deb_val,
+               date_fin_val,
+               magasin,
+               avoir) AS T4) AS T5 ON T5.REF = T1.E_REFERENCE
+			   LEFT JOIN (SELECT CASE
+              WHEN T6.L_NUMEROPIECE > 0 THEN 'True'
+              ELSE 'False' END AS isUsed, T6.L_NUMEROPIECE
+          FROM (SELECT DISTINCT L_NUMEROPIECE FROM LIGNES where L_ARTICLE = 'CHQFID') AS T6) AS T7 on T7.L_NUMEROPIECE = T1.E_REFERENCE;";
                 using (SqlCommand command = new SqlCommand(queryString, connection))
                 {
                     
@@ -1114,11 +1264,18 @@ namespace DB
                     {
                         while (reader.Read())
                         {
-                            factures.Add(new Facture(Convert.ToInt32(reader.GetString(0)), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), new Client(reader.GetString(4),reader.GetString(6), reader.GetString(5),reader.GetString(7), reader.GetString(8), reader.GetString(9), reader.GetString(10), reader.GetString(11))));
+                            Facture f = new Facture(Convert.ToInt32(reader.GetString(13)), reader.GetString(14), reader.GetString(15), reader.GetDateTime(16), Convert.ToDouble((Decimal)reader.GetSqlDecimal(12)),Convert.ToDouble((Decimal)reader.GetSqlDecimal(11)), new Client(reader.GetString(17), reader.GetString(19), reader.GetString(18), reader.GetString(20), reader.GetString(21), reader.GetString(22), reader.GetString(23), reader.GetString(24)));
+                            if (Convert.ToBoolean(reader.GetString(9)))
+                            {
+                                f.ChequeAssocieGenere = true;
+                                f.ChequeAssocie = new ChequeFidelite(reader.GetInt32(1), Convert.ToDouble((Decimal)reader.GetSqlDecimal(2)), reader.GetString(3), f.Client, reader.GetDateTime(4), reader.GetDateTime(5), reader.GetString(6), Convert.ToBoolean(reader.GetString(10)), reader.GetString(7), Convert.ToBoolean(reader.GetString(8)), Convert.ToBoolean(reader.GetString(0)));
+                            }
+                            f.Avoir = false;
+                            factures.Add(f);
                         }
                     }
                     
-                    foreach(Facture f in factures)
+                   /* foreach(Facture f in factures)
                     {
                         //Obtenir le total
                         command.CommandText= "SELECT SUM(E_DEBIT) FROM ECRITURE E WHERE E.E_JOURNAL = 'VEN' and E_LIBELLE NOT LIKE '%Remise%' and E.E_LIBELLE LIKE '%FAC%' and E.E_REFERENCE= " + f.IdFacure +  " GROUP BY E.E_REFERENCE;";
@@ -1201,7 +1358,7 @@ namespace DB
 
                         f.Avoir = false;
 
-                    }
+                    }*/
                 }
 
                 //Obtenir les tickets

@@ -59,6 +59,17 @@ namespace DB
             this.Client = client;
         }
 
+        public Facture(int idFacture, String libelle, String modeReglement, DateTime date, double total, double remise, Client client)
+        {
+            this.idFacture = idFacture;
+            this.libelle = libelle;
+            this.modeReglement = modeReglement;
+            this.Date = date;
+            this.Client = client;
+            this.Total = total;
+            this.TotalRemise = remise;
+        }
+
         public String isChequeAssocieGenere
         {
             get { return chequeAssocieGenere ? "Oui" : "Non"; }
