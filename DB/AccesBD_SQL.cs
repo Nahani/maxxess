@@ -106,46 +106,54 @@ namespace DB
 
         public List<Facture> getFactureByName(String nom)
         {
-            List<Facture> result = new List<Facture>();
-            List<Client> clients = getClientByName(nom);
-            foreach(Client client in clients ) 
+            if (nom.Equals(""))
             {
-                String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
-                SqlDataReader reader = Connexion.execute_Select(req);
+                return getAllFactures(DateTime.Now);
+            }
+            else
+            {
+           
+                List<Facture> result = new List<Facture>();
+                List<Client> clients = getClientByName(nom);
+                foreach(Client client in clients ) 
+                {
+                    String req = "SELECT * FROM ECRITURE WHERE E_JOURNAL = 'VEN' and E_AUXILIAIRE = '" + client.ID + "' and E_NUMLIGNE=1 AND E_LIBELLE LIKE '%FAC%';";
+                    SqlDataReader reader = Connexion.execute_Select(req);
                 
 
-                while (reader.Read())
-                {
-                    req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
-                    SqlDataReader reader2 = Connexion.execute_Select(req);
-                    DateTime date;
-                    if (reader2.Read())
+                    while (reader.Read())
                     {
-                        /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
-                        SqlDataReader reader3 = Connexion.execute_Select(req);
-                        Double total = 0.0;
-                        if (reader3.Read())
+                        req = "SELECT L_DATECREATION FROM LIGNES WHERE L_TYPEPIECE = 'FAC' and L_NUMEROPIECE =" + Convert.ToInt32(reader.GetString(7)) + ";";
+                        SqlDataReader reader2 = Connexion.execute_Select(req);
+                        DateTime date;
+                        if (reader2.Read())
                         {
-                            total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
-                        }*/
-                        date = reader2.GetDateTime(0);
-                        Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, client, getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
-                        f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
-                        if (f.ChequeAssocieGenere)
-                        {
-                            f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
-                            f.ChequeAssocie = getChequeFideliteByFacture(f);
-                            if (chequeFideliteAssocieIsUsed(f))
+                            /*req = "SELECT SUM(E_DEBIT) FROM ECRITURE WHERE E_REFERENCE ='" + reader.GetString(7) + "' and E_LIBELLE NOT LIKE '%Remise%' and E_LIBELLE LIKE '%FAC%';";
+                            SqlDataReader reader3 = Connexion.execute_Select(req);
+                            Double total = 0.0;
+                            if (reader3.Read())
                             {
-                                f.IsUsed = true;
-                                f.ChequeAssocieBloque = true;
+                                total = Convert.ToDouble((Decimal)reader3.GetSqlDecimal(0));
+                            }*/
+                            date = reader2.GetDateTime(0);
+                            Facture f = new Facture(Convert.ToInt32(reader.GetString(7)), reader.GetString(6), Convert.ToDouble((Decimal)reader.GetSqlDecimal(8)), date, reader.GetString(37), TypePiece.Facture, client, getRemiseFacture(Convert.ToInt32(reader.GetString(7))));
+                            f.ChequeAssocieGenere = chequeFideliteAssocieExists(f);
+                            if (f.ChequeAssocieGenere)
+                            {
+                                f.ChequeAssocieBloque = chequeFideliteAssocieIsBloque(f);
+                                f.ChequeAssocie = getChequeFideliteByFacture(f);
+                                if (chequeFideliteAssocieIsUsed(f))
+                                {
+                                    f.IsUsed = true;
+                                    f.ChequeAssocieBloque = true;
+                                }
                             }
+                        
+                            f.Avoir = false;
+                            result.Add(f);
+                        
                         }
-                        
-                        f.Avoir = false;
-                        result.Add(f);
-                        
-                    }
+                
                 }
 
                 //Obtenir les avoirs
@@ -202,7 +210,9 @@ namespace DB
 
                 Connexion.close();
             }
+                
             return result;
+            }
 
         }
 
