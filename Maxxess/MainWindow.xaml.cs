@@ -60,8 +60,6 @@ namespace Maxxess
             bt_CB.Visibility = Visibility.Hidden;
             bt_Cheque.Visibility = Visibility.Hidden;
             bt_AllFactures.Background = Brushes.LightGreen;
-            label_nbfactures.FontWeight = FontWeights.Bold;
-            label_nbfactures.Content = App.access.getAllFacturesCount();
             label_date_listfactures.FontWeight = FontWeights.Bold;
             updateDateListFacturesSelection();
         }
@@ -199,31 +197,42 @@ namespace Maxxess
         {
             facturesCollection.Clear();
             factures = App.access.getFacturesOfDay();
-            factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-            factures.Reverse();
-            double totalJour = 0;
-            foreach (Facture f in factures)
+            if (factures.Count != 0)
             {
-                totalJour += f.Total;
-                facturesCollection.Add(f);
-            }
-            lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
-            bt_CB.IsEnabled = true;
-            bt_CB.Visibility = Visibility.Visible; 
-            bt_Cheque.IsEnabled = true;
-            bt_Cheque.Visibility = Visibility.Visible;
-            date_picker_start.Visibility = Visibility.Hidden;
-            date_picker_start.IsEnabled = false;
-            date_picker_end.Visibility = Visibility.Hidden;
-            date_picker_end.IsEnabled = false;
-            bt_filtrer_date.Visibility = Visibility.Hidden;
-            bt_filtrer_date.IsEnabled = false;
+                factures.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+                factures.Reverse();
+                double totalJour = 0;
+                foreach (Facture f in factures)
+                {
+                    totalJour += f.Total;
+                    facturesCollection.Add(f);
+                }
+                lb_TotalJour.Content = "Montant Total: " + totalJour + "€";
+                bt_CB.IsEnabled = true;
+                bt_CB.Visibility = Visibility.Visible; 
+                bt_Cheque.IsEnabled = true;
+                bt_Cheque.Visibility = Visibility.Visible;
+                date_picker_start.Visibility = Visibility.Hidden;
+                date_picker_start.IsEnabled = false;
+                date_picker_end.Visibility = Visibility.Hidden;
+                date_picker_end.IsEnabled = false;
+                bt_filtrer_date.Visibility = Visibility.Hidden;
+                bt_filtrer_date.IsEnabled = false;
 
-            BrushConverter bc = new BrushConverter();
-            bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
-            bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
-            bt_FactureJour.Background = Brushes.LightGreen;
-            bt_AllFactures.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+                BrushConverter bc = new BrushConverter();
+                bt_CB.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+                bt_Cheque.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+                bt_FactureJour.Background = Brushes.LightGreen;
+                bt_AllFactures.Background = (Brush)bc.ConvertFrom("#FFDDDDDD");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Pas de factures du jour",
+                    "Chèque fidélité Maxxess",
+                     System.Windows.Forms.MessageBoxButtons.OK,
+                     System.Windows.Forms.MessageBoxIcon.Information,
+                     System.Windows.Forms.MessageBoxDefaultButton.Button2);
+            }
 
         }
 

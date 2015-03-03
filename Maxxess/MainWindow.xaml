@@ -36,6 +36,22 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <ListView x:Name="listViewFactures" ItemContainerStyle="{StaticResource ItemContStyle}" ItemsSource="{Binding FacturesCollection}" HorizontalAlignment="Left" Height="459" Margin="0,60,0,0" VerticalAlignment="Top" Width="1103" MouseDoubleClick="ListView_MouseDoubleClick" Grid.ColumnSpan="2" >
+            <ListView.Style>
+                <Style TargetType="ListView">
+                    <Style.Triggers>
+                        <Trigger Property="HasItems"
+                         Value="False">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListView">
+                                        <TextBlock FontSize="15" FontWeight="ExtraBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Pas de factures pour le mois selectionné"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="40" Header="ID"
@@ -91,8 +107,6 @@
         <DatePicker BorderThickness="0" Height="22" HorizontalAlignment="Right" Margin="0,29,215,0" Name="dateVentes" VerticalAlignment="Top" Width="147" />
         <Button Content="Suivant" HorizontalAlignment="Left" Margin="1016,523,0,0" VerticalAlignment="Top" Width="75" Click="Button_Suivant" />
         <Button Content="Précédent" HorizontalAlignment="Left" Margin="923,523,0,0" VerticalAlignment="Top" Width="75" Click="Button_Precedent" />
-        <Label Content="Nombre de factures :" HorizontalAlignment="Left" Margin="10,524,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.698,0.129" Width="134"/>
-        <Label Content="" x:Name="label_nbfactures" HorizontalAlignment="Left" Margin="124,524,0,0" VerticalAlignment="Top"/>
         <Label Content="Factures de " HorizontalAlignment="Left" Margin="679,523,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.698,0.129" Width="73"/>
         <Label x:Name="label_date_listfactures" Content="" HorizontalAlignment="Left" Margin="745,523,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.698,0.129" Width="109"/>
         <DatePicker x:Name="date_picker_facture_months" SelectedDateChanged="date_picker_facture_months_ValueChanged" HorizontalAlignment="Left" Margin="526,525,0,0" VerticalAlignment="Top" BorderThickness="0" Height="22" Width="147" RenderTransformOrigin="0.193,8.809"/>
