@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=" + System.Environment.MachineName + ";Database=MAXXESS;Integrated Security=true;";
+        static String info = "Server=" + System.Environment.MachineName + "\\SQLEXPRESS;Database=SQLAuth;Integrated Security=true;";
         //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
@@ -90,17 +90,27 @@ namespace DB
 
         public List<Client> getAllClients()
         {
-            String req = null;
             List<Client> resultat = new List<Client>();
-
-            req = "SELECT * FROM TIERS;";
-
-            SqlDataReader reader = Connexion.execute_Select(req);
-            while (reader.Read())
+            using (SqlConnection connection = new SqlConnection(info))
             {
-                resultat.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7), reader.GetString(86)));
+                connection.Open();
+
+                //Obtenir les clients
+                //
+                var queryString = "SELECT * FROM TIERS;";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+
+                    //Command
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            resultat.Add(new Client(reader.GetString(0), reader.GetString(2), reader.GetString(1), reader.GetString(3), reader.GetString(4), reader.GetString(6), reader.GetString(7), reader.GetString(86)));
+                        }
+                    }
+                }
             }
-            Connexion.close();
             return resultat;
         }
 
