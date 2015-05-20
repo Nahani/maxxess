@@ -62,6 +62,14 @@ namespace Maxxess
             bt_AllFactures.Background = Brushes.LightGreen;
             label_date_listfactures.FontWeight = FontWeights.Bold;
             updateDateListFacturesSelection();
+
+            int chequeFidelitesDeleted = App.access.deleteOutdatedChequeFidelites();
+
+            System.Windows.Forms.MessageBox.Show(chequeFidelitesDeleted + " chèques fidélités sont à ce jour invalidés",
+                       "Chèque fidélité Maxxess",
+                       System.Windows.Forms.MessageBoxButtons.OK,
+                       System.Windows.Forms.MessageBoxIcon.Information);
+
         }
 
         public ObservableCollection<Facture> FacturesCollection

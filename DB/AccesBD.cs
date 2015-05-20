@@ -18,6 +18,7 @@ namespace DB
     public interface AccesBD
     {
 
+
         Client getClientById(String id);
         List<Client> getClientByName(String name);
 
@@ -26,6 +27,7 @@ namespace DB
         List<Facture> getAllFactures(DateTime date);
         Facture getFacture(int idFacture);
 
+        int deleteOutdatedChequeFidelites();
         ChequeFidelite getChequeFideliteById(String id);
         List<ChequeFidelite> getChequesFideliteByClient(Client client);
         int insertChequeFidelite(ChequeFidelite cheque);

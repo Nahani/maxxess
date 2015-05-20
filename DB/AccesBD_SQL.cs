@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=" + System.Environment.MachineName + "\\SQLEXPRESS;Database=SQLAuth;Integrated Security=true;";
+        static String info = "Server=" + System.Environment.MachineName + ";Database=MAXXESS_CLIENT;Integrated Security=true;";
         //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
@@ -43,6 +43,14 @@ namespace DB
                 }
                 return instance;
             }
+        }
+
+        public int deleteOutdatedChequeFidelites()
+        {
+            var req = "DELETE FROM CHEQUE_FIDELITE WHERE DATE_FIN_VAL < GETDATE()";
+            int result = Connexion.execute_Request_Count(req);
+            Connexion.close();
+            return result;
         }
 
         public Client getClientById(String id)

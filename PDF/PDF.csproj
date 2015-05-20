@@ -35,20 +35,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MigraDoc.DocumentObjectModel-WPF">
-      <HintPath>C:\Users\user\Downloads\PDFSharp-MigraDocFoundation-1_32\MigraDoc\samples\Samples C#\Based on WPF\HelloMigraDoc\bin\Debug\MigraDoc.DocumentObjectModel-WPF.dll</HintPath>
+      <HintPath>Resources\MigraDoc.DocumentObjectModel-WPF.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.Rendering-WPF">
-      <HintPath>C:\Users\user\Downloads\PDFSharp-MigraDocFoundation-1_32\MigraDoc\samples\Samples C#\Based on WPF\HelloMigraDoc\bin\Debug\MigraDoc.Rendering-WPF.dll</HintPath>
+      <HintPath>Resources\MigraDoc.Rendering-WPF.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.RtfRendering-WPF">
-      <HintPath>C:\Users\user\Downloads\PDFSharp-MigraDocFoundation-1_32\MigraDoc\samples\Samples C#\Based on WPF\HelloMigraDoc\bin\Debug\MigraDoc.RtfRendering-WPF.dll</HintPath>
+      <HintPath>Resources\MigraDoc.RtfRendering-WPF.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp-WPF, Version=1.32.2608.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\PdfSharp-WPF.dll</HintPath>
+      <HintPath>Resources\PdfSharp-WPF.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting-WPF">
-      <HintPath>C:\Users\user\Downloads\PDFSharp-MigraDocFoundation-1_32\MigraDoc\samples\Samples C#\Based on WPF\HelloMigraDoc\bin\Debug\PdfSharp.Charting-WPF.dll</HintPath>
+      <HintPath>Resources\PdfSharp.Charting-WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
