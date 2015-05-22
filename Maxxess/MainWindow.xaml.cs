@@ -65,7 +65,8 @@ namespace Maxxess
 
             int chequeFidelitesDeleted = App.access.deleteOutdatedChequeFidelites();
 
-            System.Windows.Forms.MessageBox.Show(chequeFidelitesDeleted + " chèques fidélités sont à ce jour invalidés",
+            if (chequeFidelitesDeleted > 0)
+                System.Windows.Forms.MessageBox.Show(chequeFidelitesDeleted + " chèques fidélités sont à ce jour invalidés",
                        "Chèque fidélité Maxxess",
                        System.Windows.Forms.MessageBoxButtons.OK,
                        System.Windows.Forms.MessageBoxIcon.Information);

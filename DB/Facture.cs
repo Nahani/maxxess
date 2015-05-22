@@ -28,7 +28,7 @@ namespace DB
             set
             {
                 totalRemise = value;  //Calculer le montant du chèque cadeau
-                this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
+                this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 0.95 * 10.0) / 10.0;
             }
         }
         private Boolean chequeAssocieUsed;
@@ -47,7 +47,7 @@ namespace DB
             this.chequeAssocieUsed = false;
             
             //Calculer le montant du chèque cadeau
-            this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 10.0) / 10.0;
+            this.chequeCadeau = (double)Math.Floor(0.04 * totalRemise * 0.95 * 10.0) / 10.0;
         }
 
         public Facture(int idFacture, String libelle, String modeReglement, DateTime date, Client client)

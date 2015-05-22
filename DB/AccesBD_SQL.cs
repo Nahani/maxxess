@@ -5,7 +5,7 @@
  * 		- Definition des échanges de base avec la base de données pour tout les types d'éntités.
  * 		- Récupération des valeurs d'attributs.
  * 
- * 	Auteurs : Théo BOURDIN, Alexandre BOURSIER & Nolan POTIER
+ * 	Auteurs : Alexandre BOURSIER & Nolan POTIER
  * 	
  * 	Résumé : Implémentation de l'interface AccessBD pour une base de données SQL. 
  * 
@@ -28,7 +28,7 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=.\\SQLEXPRESS;Database=SQLAuth;Integrated Security=true;";
+        static String info = "Server=.\\SQLEXPRESS;Database=Maxxess;Integrated Security=true;";
         //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
@@ -1238,6 +1238,7 @@ LEFT JOIN
         WHERE E.E_JOURNAL = 'VEN'
           AND E.E_NUMLIGNE=1
           AND E.E_LIBELLE LIKE '%FAC%'
+          AND E_LIBELLE NOT LIKE '%Remise%'
           AND L.L_TYPEPIECE='FAC'
           AND L.L_NUMEROLIGNE=1
           AND L.L_NUMEROPIECE=E.E_REFERENCE
@@ -1274,7 +1275,7 @@ LEFT JOIN
              avoir
       FROM CHEQUE_FIDELITE
       WHERE REFERENCE IN
-          (SELECT CONCAT('f_', E.E_REFERENCE)
+          (SELECT 'f_' + E.E_REFERENCE
            FROM ECRITURE E,
                          LIGNES L,
                                 TIERS T
