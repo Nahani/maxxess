@@ -48,5 +48,7 @@ namespace DB
 
         List<KeyValuePair<String, String>> getModeReglement();
 
+        void regenereCheque(ChequeFidelite cheque);
+
     }
 }

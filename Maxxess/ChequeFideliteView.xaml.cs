@@ -38,8 +38,18 @@ namespace Maxxess
 
         private void bt_Regenerer_Click(object sender, RoutedEventArgs e)
         {
+            access.regenereCheque(cheque);
             PDFUtils.storePDF(cheque);
             this.Close();
+
+            chequesClientView.Cheques = App.access.getChequesFideliteByClient(cheque.Client);
+            ObservableCollection<ChequeFidelite> collection = new ObservableCollection<ChequeFidelite>();
+            foreach (ChequeFidelite c in chequesClientView.Cheques)
+            {
+                collection.Add(c);
+            }
+            chequesClientView.listViewCheques.ItemsSource = collection;
+            chequesClientView.listViewCheques.Items.Refresh();
         }
 
         private void bt_Bloquer_Click(object sender, RoutedEventArgs e)

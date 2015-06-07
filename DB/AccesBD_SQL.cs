@@ -28,8 +28,8 @@ namespace DB
 
         private static AccesBD_SQL instance;
 
-        static String info = "Server=.\\SQLEXPRESS;Database=Maxxess;Integrated Security=true;";
-        //static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
+        //static String info = "Server=.\\SQLEXPRESS;Database=Demo;Integrated Security=true;";
+        static String info = "Server=SERVER_MAXXESS\\SQLEXPRESS;Database=A_V_L_V_;User Id=sa;Password=cegid.2005;";
 
         private AccesBD_SQL() { }
 
@@ -448,6 +448,28 @@ namespace DB
 
         }
 
+        public void regenereCheque(ChequeFidelite cheque)
+        {
+            cheque.Montant = (double)Math.Floor(0.04 * getRemiseFacture(Convert.ToInt32(cheque.Reference.Substring(2))) * 0.95 * 10.0) / 10.0;
+
+            using (SqlConnection connection = new SqlConnection(info))
+            {
+                connection.Open();
+
+                //Obtenir les factures
+                //
+                var queryString = "UPDATE CHEQUE_FIDELITE SET MONTANT = @montant WHERE ID = '" + cheque.ID + "'";
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+                    command.Parameters.Add("@montant", SqlDbType.Decimal).Value = cheque.Montant;
+
+                    //Command
+                    command.ExecuteNonQuery();
+
+                }
+            }
+        }
+
         public Double getRemiseFacture(int idFacture)
         {
             Double res=0;
@@ -458,7 +480,7 @@ namespace DB
             while (reader.Read())
             {
                 
-                    res += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6))*0.95);
+                    res += (Convert.ToDouble((Decimal)reader.GetSqlDecimal(6)));
                 
             }
             Connexion.close();
